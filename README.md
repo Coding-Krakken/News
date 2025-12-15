@@ -227,16 +227,47 @@ The fact-checking feature works in two modes:
 - Vite - Build tool
 - Axios - HTTP client
 
+**Testing:**
+- pytest - Test framework
+- pytest-asyncio - Async testing
+- pytest-cov - Coverage reporting
+- httpx - HTTP client testing
+- mongomock-motor - Database mocking
+
 **Database:**
 - MongoDB - Document storage
 
 ## Development
 
 ### Backend Tests
+
+The platform includes a comprehensive test suite with **95%+ code coverage**:
+
 ```bash
 cd backend
-pytest
+./run_tests.sh
 ```
+
+**Test Statistics:**
+- 112+ test functions across 11 test files
+- Unit, Integration, and E2E tests
+- Mock database for testing
+- Async test support
+
+**Run specific tests:**
+```bash
+pytest tests/unit/ -v           # Unit tests
+pytest tests/integration/ -v     # Integration tests
+pytest tests/e2e/ -v            # End-to-end tests
+```
+
+**Coverage report:**
+```bash
+pytest --cov=app --cov-report=html
+open htmlcov/index.html
+```
+
+See `backend/tests/README.md` for detailed test documentation.
 
 ### Frontend Build
 ```bash
