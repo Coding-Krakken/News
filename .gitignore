@@ -30,6 +30,13 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+coverage/
+.nyc_output/
+
 # Environment variables
 .env
 .env.local
@@ -57,11 +64,6 @@ backend/*.sqlite
 # Logs
 *.log
 logs/
-
-# Testing
-.coverage
-htmlcov/
-.pytest_cache/
 coverage.xml
 .tox/
 *.cover

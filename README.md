@@ -228,11 +228,8 @@ The fact-checking feature works in two modes:
 - Axios - HTTP client
 
 **Testing:**
-- pytest - Test framework
-- pytest-asyncio - Async testing
-- pytest-cov - Coverage reporting
-- httpx - HTTP client testing
-- mongomock-motor - Database mocking
+- **Backend**: pytest, pytest-asyncio, pytest-cov, httpx, mongomock-motor
+- **Frontend**: Vitest, React Testing Library, jsdom, MSW
 
 **Database:**
 - MongoDB - Document storage
@@ -268,6 +265,36 @@ open htmlcov/index.html
 ```
 
 See `backend/tests/README.md` for detailed test documentation.
+
+### Frontend Tests
+
+Comprehensive frontend test suite with **80%+ code coverage**:
+
+```bash
+cd frontend
+./run_tests.sh
+```
+
+**Test Statistics:**
+- 70+ test functions across 7 test files
+- Component, Page, and Service tests
+- React Testing Library
+- Mock API responses
+
+**Run specific tests:**
+```bash
+npm test                    # Watch mode
+npm run test:coverage       # With coverage
+npm run test:ui             # UI mode
+```
+
+**Coverage report:**
+```bash
+npm run test:coverage
+open coverage/index.html
+```
+
+See `frontend/TEST_README.md` for detailed test documentation.
 
 ### Frontend Build
 ```bash
