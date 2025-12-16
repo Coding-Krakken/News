@@ -14,6 +14,14 @@ vi.mock('../services/api', () => ({
 
 import { storyService, articleService } from '../services/api'
 
+// stub Filters component to avoid mounting network-dependent internals
+vi.mock('../components/Filters', () => ({
+  default: () => {
+    const React = require('react')
+    return React.createElement('div', null, 'Filters')
+  }
+}))
+
 describe('StoriesPage cluster behavior', () => {
   beforeEach(() => {
     vi.clearAllMocks()
