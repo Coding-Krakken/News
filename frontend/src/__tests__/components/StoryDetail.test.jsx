@@ -112,11 +112,11 @@ describe('StoryDetail', () => {
 
   it('should display articles list', async () => {
     render(<StoryDetail storyId="story1" onClose={mockOnClose} />)
-    
     await waitFor(() => {
       expect(screen.getByText(/Articles in this Story/)).toBeInTheDocument()
-      expect(screen.getByText('Article 1')).toBeInTheDocument()
-      expect(screen.getByText('Article 2')).toBeInTheDocument()
+      // Use regex matcher to match article titles regardless of element splits
+      expect(screen.getByText(/Article 1/)).toBeInTheDocument()
+      expect(screen.getByText(/Article 2/)).toBeInTheDocument()
     })
   })
 

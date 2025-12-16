@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import AnalyticsPage from '../../pages/AnalyticsPage'
 import { analyticsService } from '../../services/api'
 
@@ -68,25 +68,28 @@ describe('AnalyticsPage', () => {
 
   it('should display source statistics', async () => {
     render(<AnalyticsPage />)
-    
     await waitFor(() => {
       expect(screen.getByText('By Source')).toBeInTheDocument()
       expect(screen.getByText('BBC News')).toBeInTheDocument()
-      expect(screen.getByText('40')).toBeInTheDocument()
+      // Use getAllByText for non-unique numbers
+      const sourceCard = screen.getByText('By Source').closest('.stat-card')
+      expect(sourceCard).toBeInTheDocument()
+      expect(within(sourceCard).getByText('40')).toBeInTheDocument()
       expect(screen.getByText('CNN')).toBeInTheDocument()
-      expect(screen.getByText('30')).toBeInTheDocument()
+      expect(within(sourceCard).getByText('30')).toBeInTheDocument()
     })
   })
 
   it('should display category statistics', async () => {
     render(<AnalyticsPage />)
-    
     await waitFor(() => {
       expect(screen.getByText('By Category')).toBeInTheDocument()
       expect(screen.getByText('politics')).toBeInTheDocument()
-      expect(screen.getByText('50')).toBeInTheDocument()
+      const categoryCard = screen.getByText('By Category').closest('.stat-card')
+      expect(categoryCard).toBeInTheDocument()
+      expect(within(categoryCard).getByText('50')).toBeInTheDocument()
       expect(screen.getByText('technology')).toBeInTheDocument()
-      expect(screen.getByText('30')).toBeInTheDocument()
+      expect(within(categoryCard).getByText('30')).toBeInTheDocument()
     })
   })
 
@@ -112,11 +115,12 @@ describe('AnalyticsPage', () => {
 
   it('should display time statistics', async () => {
     render(<AnalyticsPage />)
-    
     await waitFor(() => {
       expect(screen.getByText('By Time')).toBeInTheDocument()
       expect(screen.getByText('1h ago')).toBeInTheDocument()
-      expect(screen.getByText('10')).toBeInTheDocument()
+      const timeCard = screen.getByText('By Time').closest('.stat-card')
+      expect(timeCard).toBeInTheDocument()
+      expect(within(timeCard).getByText('10')).toBeInTheDocument()
     })
   })
 

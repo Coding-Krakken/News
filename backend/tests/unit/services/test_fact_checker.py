@@ -166,12 +166,9 @@ class TestFactCheckingService:
         """Test grouping creates multiple groups for different claims."""
         claim1 = Claim(**sample_claim)
         claim1.text = "First claim about topic A"
-        
         claim2 = Claim(**sample_claim)
-        claim2.text = "Second claim about topic B completely different"
-        
+        claim2.text = "Unrelated statement about topic Z"
         groups = service._group_similar_claims([claim1, claim2])
-        
         assert len(groups) == 2
         assert len(groups[0]) == 1
         assert len(groups[1]) == 1

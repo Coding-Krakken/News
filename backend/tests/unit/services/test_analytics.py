@@ -54,34 +54,30 @@ class TestAnalyticsService:
     def test_compute_coverage_stats_by_geography(self, service, sample_articles_list):
         """Test computing coverage stats by geography."""
         articles = [Article(**data) for data in sample_articles_list]
-        
         # Set geographies
         articles[0].geography = "United States"
         articles[1].geography = "United Kingdom"
         articles[2].geography = "United States"
-        
+        articles[3].geography = "United States"
         stats = service.compute_coverage_stats(articles, [])
-        
         assert "United States" in stats.by_geography
         assert "United Kingdom" in stats.by_geography
-        assert stats.by_geography["United States"] == 2
+        assert stats.by_geography["United States"] == 4
     
     def test_compute_coverage_stats_by_ideology(self, service, sample_articles_list):
         """Test computing coverage stats by ideology."""
         articles = [Article(**data) for data in sample_articles_list]
-        
         # Set ideologies
         articles[0].ideology = "left"
         articles[1].ideology = "center"
         articles[2].ideology = "right"
         articles[3].ideology = "center"
-        
+        articles[4].ideology = "center"
         stats = service.compute_coverage_stats(articles, [])
-        
         assert "left" in stats.by_ideology
         assert "center" in stats.by_ideology
         assert "right" in stats.by_ideology
-        assert stats.by_ideology["center"] == 2
+        assert stats.by_ideology["center"] == 3
     
     def test_compute_time_stats_recent_articles(self, service, sample_articles_list):
         """Test computing time stats for recent articles."""
@@ -160,14 +156,13 @@ class TestAnalyticsService:
     def test_filter_articles_by_ideologies(self, service, sample_articles_list):
         """Test filtering articles by ideologies."""
         articles = [Article(**data) for data in sample_articles_list]
-        
         articles[0].ideology = "left"
         articles[1].ideology = "center"
         articles[2].ideology = "right"
-        
+        articles[3].ideology = "center"
+        articles[4].ideology = "center"
         filtered = service.filter_articles(articles, ideologies=["center", "right"])
-        
-        assert len(filtered) == 2
+        assert len(filtered) == 4
         assert all(a.ideology in ["center", "right"] for a in filtered)
     
     def test_filter_articles_by_date_range(self, service, sample_articles_list):

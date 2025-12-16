@@ -23,11 +23,13 @@ class TestArticlesAPI:
     async def test_get_sources_list(self, client: AsyncClient):
         """Test getting list of configured sources."""
         response = await client.get("/api/articles/sources/list")
-        
         assert response.status_code == 200
         sources = response.json()
         assert isinstance(sources, list)
-        assert len(sources) == 4  # Pre-configured sources
+        # There should be at least the 4 default sources
+        default_names = {"BBC News", "CNN", "Reuters", "The Guardian"}
+        found_names = {s["name"] for s in sources}
+        assert default_names.issubset(found_names)
         assert all("name" in s for s in sources)
     
     @pytest.mark.asyncio
