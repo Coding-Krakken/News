@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
-import StoryDetail from '../../components/StoryDetail'
+import StoryDetail from '../components/StoryDetail'
 
-vi.mock('../../services/api', () => ({
+vi.mock('../services/api', () => ({
   storyService: {
     getStory: vi.fn(),
     getStoryArticles: vi.fn(),
@@ -14,7 +14,7 @@ vi.mock('../../services/api', () => ({
   }
 }))
 
-import { storyService, factCheckerService } from '../../services/api'
+import { storyService, factCheckerService } from '../services/api'
 
 describe('StoryDetail coverage additions', () => {
   const mockStory = {

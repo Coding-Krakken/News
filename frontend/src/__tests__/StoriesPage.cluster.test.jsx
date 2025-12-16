@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import StoriesPage from '../../pages/StoriesPage'
+import StoriesPage from '../pages/StoriesPage'
 
-vi.mock('../../services/api', () => ({
+vi.mock('../services/api', () => ({
   storyService: {
     getStories: vi.fn(),
     clusterStories: vi.fn()
@@ -12,7 +12,7 @@ vi.mock('../../services/api', () => ({
   }
 }))
 
-import { storyService, articleService } from '../../services/api'
+import { storyService, articleService } from '../services/api'
 
 describe('StoriesPage cluster behavior', () => {
   beforeEach(() => {
