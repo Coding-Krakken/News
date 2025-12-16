@@ -1,15 +1,32 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 
-// Filters error logging
+// Single mock providing all service exports used in these tests
 vi.mock('../services/api', () => ({
   analyticsService: {
-    getFacets: vi.fn()
+    getFacets: vi.fn(),
+    getStats: vi.fn()
+  },
+  storyService: {
+    getStories: vi.fn(),
+    clusterStories: vi.fn(),
+    getStory: vi.fn(),
+    getStoryArticles: vi.fn(),
+    getStoryCoverage: vi.fn()
+  },
+  articleService: {
+    ingestArticles: vi.fn()
+  },
+  factCheckerService: {
+    getFactLedger: vi.fn(),
+    generateFactLedger: vi.fn()
   }
 }))
 
 import Filters from '../components/Filters'
-import { analyticsService } from '../services/api'
+import StoryDetail from '../components/StoryDetail'
+import AnalyticsPage from '../pages/AnalyticsPage'
+import { analyticsService, storyService, factCheckerService } from '../services/api'
 
 describe('Filters error handling', () => {
   beforeEach(() => {
@@ -27,22 +44,6 @@ describe('Filters error handling', () => {
     })
   })
 })
-
-// StoryDetail generate failure
-vi.mock('../services/api', () => ({
-  storyService: {
-    getStory: vi.fn(),
-    getStoryArticles: vi.fn(),
-    getStoryCoverage: vi.fn()
-  },
-  factCheckerService: {
-    getFactLedger: vi.fn(),
-    generateFactLedger: vi.fn()
-  }
-}))
-
-import StoryDetail from '../components/StoryDetail'
-import { storyService, factCheckerService } from '../services/api'
 
 describe('StoryDetail generate error', () => {
   beforeEach(() => {
@@ -71,21 +72,11 @@ describe('StoryDetail generate error', () => {
   })
 })
 
-// AnalyticsPage no data
-vi.mock('../services/api', () => ({
-  analyticsService: {
-    getStats: vi.fn()
-  }
-}))
-
-import AnalyticsPage from '../pages/AnalyticsPage'
-import { analyticsService as analyticsService2 } from '../services/api'
-
 describe('AnalyticsPage empty stats', () => {
   beforeEach(() => vi.clearAllMocks())
 
   it('shows empty state when stats is falsy', async () => {
-    analyticsService2.getStats.mockResolvedValue(null)
+    analyticsService.getStats.mockResolvedValue(null)
 
     render(<AnalyticsPage />)
 
