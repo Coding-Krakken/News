@@ -79,6 +79,7 @@ async def add_source(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/{article_url:path}", response_model=dict)
 async def get_article(article_url: str, db=Depends(get_database)):
     """Get a specific article by URL"""
@@ -86,25 +87,3 @@ async def get_article(article_url: str, db=Depends(get_database)):
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     return article
-
-@router.get("/sources/list", response_model=List[dict])
-async def get_sources():
-    """Get all configured news sources"""
-    # Ensure each source is a dict (for test compatibility)
-    sources = ingestion_service.get_sources()
-    return [dict(s) for s in sources]
-
-@router.post("/sources/add", response_model=dict)
-async def add_source(
-    name: str,
-    url: str,
-    source_type: str = "rss",
-    ideology: str = "center",
-    geography: str = "International"
-):
-    """Add a new news source"""
-    try:
-        ingestion_service.add_source(name, url, source_type, ideology, geography)
-        return {"message": f"Source '{name}' added successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
