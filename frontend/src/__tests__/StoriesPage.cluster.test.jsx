@@ -27,6 +27,10 @@ describe('StoriesPage cluster behavior', () => {
   it('calls clusterStories and reloads stories after timeout', async () => {
     vi.useFakeTimers()
 
+    // provide analyticsService.getFacets to avoid Filters load error
+    const api = await import('../services/api')
+    api.analyticsService = { getFacets: vi.fn().mockResolvedValue({ sources: [] }) }
+
     render(<StoriesPage />)
 
     await waitFor(() => expect(screen.getByText(/Ingest Articles/)).toBeInTheDocument())
@@ -37,7 +41,7 @@ describe('StoriesPage cluster behavior', () => {
     expect(storyService.clusterStories).toHaveBeenCalled()
 
     // advance timers so the internal setTimeout runs
-    vi.runAllTimers()
+    vi.advanceTimersByTime(3000)
 
     // getStories should be called again to reload
     await waitFor(() => expect(storyService.getStories).toHaveBeenCalled())
