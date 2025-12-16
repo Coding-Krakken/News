@@ -29,7 +29,7 @@ describe('StoriesPage cluster behavior', () => {
 
     // provide analyticsService.getFacets to avoid Filters load error
     const api = await import('../services/api')
-    api.analyticsService = { getFacets: vi.fn().mockResolvedValue({ sources: [] }) }
+    api.analyticsService = { getFacets: vi.fn().mockResolvedValue({ sources: [], categories: [], geographies: [], ideologies: [] }) }
 
     render(<StoriesPage />)
 
