@@ -22,3 +22,15 @@ httpx==0.25.2
 fakeredis==2.20.1
 mongomock-motor==0.0.21
 freezegun==1.4.0
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+# WebSocket support (for feature #5)
+websockets==12.0
+# Visualization libraries (for feature #4)
+reportlab==4.0.7
+# NLP for enhanced features (#7, #9)
+spacy==3.7.2
+# Charts and exports (for feature #4)
+plotly==5.18.0

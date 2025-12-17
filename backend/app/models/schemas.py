@@ -1,6 +1,94 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr, validator
 from typing import Optional, List
 from datetime import datetime
+from enum import Enum
+
+
+class UserRole(str, Enum):
+    """User role enumeration"""
+    USER = "user"
+    ADMIN = "admin"
+
+
+class User(BaseModel):
+    """User model"""
+    username: str
+    email: EmailStr
+    full_name: Optional[str] = None
+    disabled: bool = False
+    role: UserRole = UserRole.USER
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # User preferences
+    bookmarked_stories: List[str] = Field(default_factory=list)
+    bookmarked_articles: List[str] = Field(default_factory=list)
+    saved_filters: dict = Field(default_factory=dict)
+    notification_preferences: dict = Field(default_factory=dict)
+    
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "username": "johndoe",
+                "email": "john@example.com",
+                "full_name": "John Doe",
+                "role": "user"
+            }
+        }
+
+
+class UserInDB(User):
+    """User model with hashed password for database storage"""
+    hashed_password: str
+
+
+class UserCreate(BaseModel):
+    """Schema for user registration"""
+    username: str
+    email: EmailStr
+    password: str
+    full_name: Optional[str] = None
+    
+    @validator('username')
+    def username_alphanumeric(cls, v: str) -> str:
+        if not v.isalnum():
+            raise ValueError('Username must be alphanumeric')
+        if len(v) < 3:
+            raise ValueError('Username must be at least 3 characters')
+        return v
+    
+    @validator('password')
+    def password_strength(cls, v: str) -> str:
+        if len(v) < 8:
+            raise ValueError('Password must be at least 8 characters')
+        if not any(c.isupper() for c in v):
+            raise ValueError('Password must contain at least one uppercase letter')
+        if not any(c.islower() for c in v):
+            raise ValueError('Password must contain at least one lowercase letter')
+        if not any(c.isdigit() for c in v):
+            raise ValueError('Password must contain at least one digit')
+        return v
+
+
+class UserUpdate(BaseModel):
+    """Schema for user profile updates"""
+    email: Optional[EmailStr] = None
+    full_name: Optional[str] = None
+    notification_preferences: Optional[dict] = None
+
+
+class Token(BaseModel):
+    """JWT token response"""
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
+class TokenData(BaseModel):
+    """Data stored in JWT token"""
+    username: Optional[str] = None
+    role: Optional[str] = None
+
 
 class Article(BaseModel):
     """Article model"""
