@@ -17,11 +17,12 @@ limiter = Limiter(key_func=get_remote_address)
 TESTING = os.getenv("TESTING", "false").lower() == "true"
 if TESTING:
     # slowapi Limiter supports an `enabled` attribute; set it False during tests.
+    # If the attribute doesn't exist, AttributeError is caught and we keep limiter enabled.
     try:
         limiter.enabled = False
     except AttributeError:
-        # If attribute is not present for some reason, we leave limiter as-is.
-        logging.warning("Could not disable rate limiter for tests")
+        # The enabled attribute doesn't exist on this version of slowapi
+        logging.warning("Could not disable rate limiter for tests - enabled attribute not available")
 else:
     # In non-test environments, check if rate limiting is enabled via config
     try:

@@ -3,7 +3,7 @@ Configuration module for News Analytics Platform.
 Provides typed configuration with validation for both local and Vercel deployments.
 """
 import os
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from pydantic import Field, field_validator, ValidationInfo
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
@@ -85,37 +85,37 @@ class Settings(BaseSettings):
     
     @field_validator("mongodb_url")
     @classmethod
-    def validate_mongodb_url(cls, v: str) -> str:
+    def validate_mongodb_url(cls, url: str) -> str:
         """Validate MongoDB URL format."""
-        if not v:
+        if not url:
             raise ValueError("MONGODB_URL must be set")
-        if not v.startswith(("mongodb://", "mongodb+srv://")):
+        if not url.startswith(("mongodb://", "mongodb+srv://")):
             raise ValueError("MONGODB_URL must start with mongodb:// or mongodb+srv://")
-        return v
+        return url
     
     @field_validator("secret_key")
     @classmethod
-    def validate_secret_key_production(cls, v: str, info: ValidationInfo) -> str:
+    def validate_secret_key_production(cls, key: str, info: ValidationInfo) -> str:
         """Ensure secret key is changed in production."""
         environment = info.data.get("environment", "local")
-        if environment == "production" and v == "dev-secret-key-change-in-production":
+        if environment == "production" and key == "dev-secret-key-change-in-production":
             raise ValueError(
                 "SECRET_KEY must be changed in production! "
                 "Generate a secure key with: openssl rand -hex 32"
             )
-        return v
+        return key
     
     @field_validator("cors_origins")
     @classmethod
-    def validate_cors_origins(cls, v: str) -> str:
+    def validate_cors_origins(cls, origins_str: str) -> str:
         """Validate CORS origins format."""
-        origins = [origin.strip() for origin in v.split(",")]
+        origins = [origin.strip() for origin in origins_str.split(",")]
         for origin in origins:
             if origin and not origin.startswith(("http://", "https://")):
                 raise ValueError(f"Invalid CORS origin: {origin}. Must start with http:// or https://")
-        return v
+        return origins_str
     
-    def get_cors_origins_list(self) -> list[str]:
+    def get_cors_origins_list(self) -> List[str]:
         """Get CORS origins as a list."""
         return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
     
