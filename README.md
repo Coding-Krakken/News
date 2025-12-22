@@ -2,6 +2,27 @@
 
 A comprehensive news analytics platform that ingests articles from multiple sources, clusters them into story events, computes coverage statistics, and provides AI-powered fact-checking capabilities.
 
+## 🚀 Quick Start
+
+### Local Development (Docker Compose)
+```bash
+git clone https://github.com/Coding-Krakken/News.git
+cd News
+cp backend/.env.example backend/.env
+# Edit backend/.env with your OpenAI API key (optional)
+docker compose up
+```
+
+Visit http://localhost:3000 to use the app!
+
+### Production Deployment
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment guide including:
+- Vercel deployment (frontend)
+- Railway/Render deployment (backend)
+- MongoDB Atlas setup
+- Environment configuration
+- Troubleshooting
+
 ## Features
 
 ### Core Functionality
@@ -43,13 +64,42 @@ The platform includes an innovative "Fact-Only" feature that:
 - **API Client**: Axios for HTTP requests
 - **State Management**: React hooks
 
+### Deployment Options
+The platform supports two deployment paths:
+1. **Local Development**: Docker Compose with MongoDB, Backend, and Frontend
+2. **Production**: Vercel (Frontend) + Railway/Render (Backend) + MongoDB Atlas
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
+
 ## Installation
 
+For quick start, see [QUICKSTART.md](QUICKSTART.md).
+
 ### Prerequisites
-- Python 3.12+
-- Node.js 20+
-- MongoDB (local or remote)
-- OpenAI API key (optional, for AI fact-checking)
+- **For Docker**: Docker and Docker Compose
+- **For Manual Setup**: Python 3.12+, Node.js 20+, MongoDB
+- **Optional**: OpenAI API key for AI fact-checking
+
+### Docker Setup (Recommended)
+
+```bash
+# 1. Clone repository
+git clone https://github.com/Coding-Krakken/News.git
+cd News
+
+# 2. Create environment file
+cp backend/.env.example backend/.env
+# Edit backend/.env to add OpenAI key (optional)
+
+# 3. Start all services
+docker compose up
+```
+
+Visit http://localhost:3000 - you're ready to go!
+
+### Manual Setup
+
+See [QUICKSTART.md](QUICKSTART.md) or follow these steps:
 
 ### Backend Setup
 

@@ -6,6 +6,9 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi import Request
 import os
+import logging
+
+from ..config import get_settings
 
 # Initialize limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -14,11 +17,21 @@ limiter = Limiter(key_func=get_remote_address)
 TESTING = os.getenv("TESTING", "false").lower() == "true"
 if TESTING:
     # slowapi Limiter supports an `enabled` attribute; set it False during tests.
+    # If the attribute doesn't exist, AttributeError is caught and we keep limiter enabled.
     try:
         limiter.enabled = False
-    except Exception:
-        # If attribute is not present for some reason, we leave limiter as-is.
-        pass
+    except AttributeError:
+        # The enabled attribute doesn't exist on this version of slowapi
+        logging.warning("Could not disable rate limiter for tests - enabled attribute not available")
+else:
+    # In non-test environments, check if rate limiting is enabled via config
+    try:
+        settings = get_settings()
+        if not settings.rate_limit_enabled:
+            limiter.enabled = False
+    except (ImportError, ValueError) as e:
+        # If config loading fails, keep limiter enabled as a safe default
+        logging.warning(f"Could not load rate limit config, keeping limiter enabled: {e}")
 
 # Rate limit configurations
 RATE_LIMITS = {

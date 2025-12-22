@@ -1,7 +1,7 @@
 import openai
-import os
 from typing import List, Dict
 from ..models.schemas import Article, Claim, FactLedger
+from ..config import get_settings
 import json
 import re
 
@@ -9,7 +9,8 @@ class FactCheckingService:
     """Service for AI-powered fact extraction and cross-corroboration"""
     
     def __init__(self):
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        settings = get_settings()
+        self.api_key = settings.openai_api_key
         if self.api_key:
             openai.api_key = self.api_key
     
