@@ -10,6 +10,8 @@ import os
 os.environ["MONGODB_URL"] = "mongodb://test"
 os.environ["DATABASE_NAME"] = "test_news_analytics"
 os.environ["OPENAI_API_KEY"] = "test-key"
+# Inform application it's running under tests so integration points can adjust
+os.environ["TESTING"] = "true"
 
 from app.main import app
 from app.database import get_database
@@ -36,6 +38,8 @@ async def mock_db():
     await db.articles.create_index("category")
     await db.stories.create_index("story_id", unique=True)
     await db.stories.create_index("created_at")
+    # Ensure users collection exists for auth tests
+    await db.users.create_index("email", unique=True)
     
     yield db
     
@@ -52,6 +56,11 @@ async def client(mock_db) -> AsyncGenerator[AsyncClient, None]:
         return mock_db
     
     app.dependency_overrides[get_database] = override_get_database
+    # Also set the global database in the application module so code that
+    # calls `get_database()` directly (instead of using Depends) uses the
+    # mock DB during tests.
+    import app.database as app_database
+    app_database.database = mock_db
     
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac

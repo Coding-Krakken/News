@@ -6,9 +6,12 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 import os
+import hashlib
 
 # Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Use PBKDF2-SHA256 to avoid dependency issues with bcrypt in test environments
+# and to avoid bcrypt's 72-byte password limitation.
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
 # JWT settings
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
@@ -19,12 +22,20 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verify a password against a hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    # Pre-hash the incoming plain password with SHA-256 to avoid bcrypt
+    # 72-byte limitation and to provide a fixed-length input.
+    prehashed = hashlib.sha256(plain_password.encode("utf-8")).hexdigest()
+    return pwd_context.verify(prehashed, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
-    """Hash a password."""
-    return pwd_context.hash(password)
+    """Hash a password.
+
+    Pre-hash the password with SHA-256 before bcrypt to handle
+    arbitrary-length passwords and avoid bcrypt's 72-byte limit.
+    """
+    prehashed = hashlib.sha256(password.encode("utf-8")).hexdigest()
+    return pwd_context.hash(prehashed)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:

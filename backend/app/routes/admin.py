@@ -130,6 +130,9 @@ async def create_source(
     
     # Create source
     source_dict = source_data.model_dump()
+    # Ensure URL fields are plain strings for MongoDB/BSON encoding
+    if "url" in source_dict and source_dict["url"] is not None:
+        source_dict["url"] = str(source_dict["url"])
     source_dict["created_at"] = datetime.utcnow()
     source_dict["updated_at"] = datetime.utcnow()
     source_dict["created_by"] = current_user.username
@@ -171,6 +174,9 @@ async def update_source(
         return NewsSource(**existing)
     
     update_data["updated_at"] = datetime.utcnow()
+    # Convert HttpUrl objects to strings for storage
+    if "url" in update_data and update_data["url"] is not None:
+        update_data["url"] = str(update_data["url"])
     
     # Update source
     await db.sources.update_one(
@@ -334,6 +340,23 @@ async def get_audit_log(
     for log in logs:
         log.pop("_id", None)
     
+    # Serialize any BSON types (e.g., ObjectId) inside the log details so
+    # Pydantic can serialize the response.
+    from bson import ObjectId
+
+    def _serialize_bson(value):
+        if isinstance(value, ObjectId):
+            return str(value)
+        if isinstance(value, dict):
+            return {k: _serialize_bson(v) for k, v in value.items()}
+        if isinstance(value, list):
+            return [_serialize_bson(v) for v in value]
+        return value
+
+    for log in logs:
+        if "details" in log and log["details"] is not None:
+            log["details"] = _serialize_bson(log["details"]) 
+
     return [AuditLog(**log) for log in logs]
 
 

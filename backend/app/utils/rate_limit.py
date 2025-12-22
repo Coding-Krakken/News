@@ -5,9 +5,20 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi import Request
+import os
 
 # Initialize limiter
 limiter = Limiter(key_func=get_remote_address)
+
+# If running tests, disable the limiter to avoid 429s during test runs.
+TESTING = os.getenv("TESTING", "false").lower() == "true"
+if TESTING:
+    # slowapi Limiter supports an `enabled` attribute; set it False during tests.
+    try:
+        limiter.enabled = False
+    except Exception:
+        # If attribute is not present for some reason, we leave limiter as-is.
+        pass
 
 # Rate limit configurations
 RATE_LIMITS = {
