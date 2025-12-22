@@ -59,6 +59,8 @@ jobs:
     needs: [backend-test, frontend-test]
     steps:
       - uses: actions/checkout@v4
+      - name: Install docker-compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
       - name: Build Docker images
         run: |
           docker-compose build
