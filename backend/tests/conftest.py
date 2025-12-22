@@ -8,8 +8,11 @@ import os
 
 # Set test environment
 os.environ["MONGODB_URL"] = "mongodb://test"
-os.environ["DATABASE_NAME"] = "test_news_analytics"
-os.environ["OPENAI_API_KEY"] = "test-key"
+# Use the production-like default DB name for tests so settings validation
+# that expects `news_analytics` sees the same default value.
+os.environ["DATABASE_NAME"] = "news_analytics"
+# Use a realistic OpenAI-style test key (matches tests expecting `sk-test`).
+os.environ["OPENAI_API_KEY"] = "sk-test"
 # Inform application it's running under tests so integration points can adjust
 os.environ["TESTING"] = "true"
 
@@ -29,7 +32,8 @@ def event_loop() -> Generator:
 async def mock_db():
     """Provide a mock MongoDB database for testing."""
     client = AsyncMongoMockClient()
-    db = client.test_news_analytics
+    # Use the same database name as the environment to keep tests consistent.
+    db = client.news_analytics
     
     # Create indexes
     await db.articles.create_index("url", unique=True)
@@ -44,7 +48,7 @@ async def mock_db():
     yield db
     
     # Cleanup
-    await client.drop_database("test_news_analytics")
+    await client.drop_database("news_analytics")
 
 
 @pytest.fixture
