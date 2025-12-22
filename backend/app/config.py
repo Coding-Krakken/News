@@ -4,7 +4,7 @@ Provides typed configuration with validation for both local and Vercel deploymen
 """
 import os
 from typing import Optional, Literal
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, ValidationInfo
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 
@@ -95,7 +95,7 @@ class Settings(BaseSettings):
     
     @field_validator("secret_key")
     @classmethod
-    def validate_secret_key_production(cls, v: str, info) -> str:
+    def validate_secret_key_production(cls, v: str, info: ValidationInfo) -> str:
         """Ensure secret key is changed in production."""
         environment = info.data.get("environment", "local")
         if environment == "production" and v == "dev-secret-key-change-in-production":
