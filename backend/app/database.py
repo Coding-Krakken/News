@@ -33,6 +33,16 @@ async def init_db():
     await database.users.create_index("email", unique=True)
     await database.users.create_index("role")
     
+    # Create indexes for sources (admin dashboard)
+    await database.sources.create_index("name", unique=True)
+    await database.sources.create_index("enabled")
+    await database.sources.create_index("created_at")
+    
+    # Create indexes for audit_log (admin dashboard)
+    await database.audit_log.create_index("timestamp")
+    await database.audit_log.create_index("entity_type")
+    await database.audit_log.create_index("user")
+    
     print(f"Connected to MongoDB: {database_name}")
 
 async def close_db():

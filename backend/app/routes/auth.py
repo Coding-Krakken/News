@@ -1,7 +1,7 @@
 """
 Authentication routes for user registration, login, and token management.
 """
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from datetime import timedelta
 from typing import List
@@ -15,12 +15,14 @@ from ..utils.auth import (
     create_access_token, create_refresh_token, decode_token
 )
 from ..utils.dependencies import get_current_active_user, get_current_admin_user
+from ..utils.rate_limit import limiter, get_rate_limit
 
 router = APIRouter()
 
 
 @router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
-async def register(user_data: UserCreate):
+@limiter.limit(get_rate_limit("auth_register"))
+async def register(request: Request, user_data: UserCreate):
     """Register a new user."""
     db = get_database()
     
@@ -56,7 +58,8 @@ async def register(user_data: UserCreate):
 
 
 @router.post("/login", response_model=Token)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+@limiter.limit(get_rate_limit("auth_login"))
+async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     """Login and get access token."""
     db = get_database()
     
@@ -89,7 +92,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @router.post("/refresh", response_model=Token)
-async def refresh_token(refresh_token: str):
+@limiter.limit(get_rate_limit("auth_refresh"))
+async def refresh_token(request: Request, refresh_token: str):
     """Refresh access token using refresh token."""
     payload = decode_token(refresh_token)
     
