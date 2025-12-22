@@ -1,9 +1,6 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 from typing import Optional
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
+from .config import get_settings
 
 # Database client
 client: Optional[AsyncIOMotorClient] = None
@@ -12,8 +9,9 @@ database = None
 async def init_db():
     """Initialize database connection"""
     global client, database
-    mongodb_url = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
-    database_name = os.getenv("DATABASE_NAME", "news_analytics")
+    settings = get_settings()
+    mongodb_url = settings.mongodb_url
+    database_name = settings.database_name
     
     client = AsyncIOMotorClient(mongodb_url)
     database = client[database_name]

@@ -2,6 +2,27 @@
 
 A comprehensive news analytics platform that ingests articles from multiple sources, clusters them into story events, computes coverage statistics, and provides AI-powered fact-checking capabilities.
 
+## 🚀 Quick Start
+
+### Local Development (Docker Compose)
+```bash
+git clone https://github.com/Coding-Krakken/News.git
+cd News
+cp backend/.env.example backend/.env
+# Edit backend/.env with your OpenAI API key (optional)
+docker compose up
+```
+
+Visit http://localhost:3000 to use the app!
+
+### Production Deployment
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment guide including:
+- Vercel deployment (frontend)
+- Railway/Render deployment (backend)
+- MongoDB Atlas setup
+- Environment configuration
+- Troubleshooting
+
 ## Features
 
 ### Core Functionality

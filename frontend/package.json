@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:vercel": "vite build",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint": "echo 'Add linter if needed'",
+    "typecheck": "echo 'Add TypeScript checking if migrated to TS'"
   },
   "dependencies": {
     "react": "^18.2.0",

@@ -1,6 +1,17 @@
 import axios from 'axios';
 
-const API_BASE_URL = '/api';
+// Get API base URL from environment variable
+// For local development, this will be '/api' (proxied to backend by Vite)
+// For production, this will be the full backend API URL
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+
+// Log configuration in development
+if (import.meta.env.DEV) {
+  console.log('API Configuration:', {
+    baseURL: API_BASE_URL,
+    environment: import.meta.env.VITE_ENVIRONMENT || 'local'
+  });
+}
 
 export const articleService = {
   ingestArticles: async () => {

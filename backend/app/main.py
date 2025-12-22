@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 
+from .config import get_settings, validate_config
 from .database import init_db, close_db
 from .routes import articles, stories, analytics, fact_checker, auth, admin
 from .utils.rate_limit import limiter
@@ -11,6 +12,7 @@ from .utils.rate_limit import limiter
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
+    validate_config()  # Validate configuration before starting
     await init_db()
     yield
     # Shutdown
@@ -27,10 +29,11 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# Configure CORS
+# Configure CORS dynamically from settings
+settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=settings.get_cors_origins_list(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
