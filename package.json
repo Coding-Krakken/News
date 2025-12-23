@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "News Analytics Platform with dual deployment support",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "dev": "echo 'Use: docker compose up OR run backend and frontend separately'",
     "dev:backend": "cd backend && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
