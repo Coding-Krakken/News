@@ -27,6 +27,12 @@ EOF
 # Run migrations
 cd backend
 ./run-migrations.sh dev
+
+**CI note:**
+
+- The repository's CI uses a Postgres service configured with `POSTGRES_USER=news_user`.
+- For reliability, application configs and scripts should use the project DB user `news_user` (or `postgres` for admin tasks) rather than an OS `root` account. If your automation references `root` and fails with `FATAL: role "root" does not exist`, update the caller to use `news_user` or add a role creation step in CI.
+- A short-term compatibility step was added to the CI workflow to create a `root` role when necessary; however, the recommended permanent fix is to migrate callers to `news_user`/`postgres`.
 ```
 
 #### 2. Backend Configuration
