@@ -173,11 +173,11 @@ jobs:
             PGPASSWORD=news_password psql -h localhost -p 5432 -U news_user -d news_db < "$file"
           done
       
-      - name: Run E2E tests
-        working-directory: ./frontend
+      - name: Run E2E tests (local orchestration)
+        working-directory: ./
         env:
           CI: true
-        run: npm run test:e2e
+        run: npm run test:e2e:local
       
       - name: Upload Playwright report
         if: always()

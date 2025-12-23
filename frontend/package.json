@@ -12,6 +12,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "jest --coverage",
+    "test:coverage": "jest --coverage --coverageDirectory=coverage",
     "test:watch": "jest --watch",
     "test:e2e": "playwright test",
     "lint": "eslint src --ext .ts,.tsx",

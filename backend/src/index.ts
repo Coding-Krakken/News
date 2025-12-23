@@ -5,14 +5,19 @@ import { logger } from './utils/logger';
 
 async function start() {
   try {
-    // Test database connection
-    const connected = await testConnection();
-    if (!connected) {
-      logger.error('Failed to connect to database');
-      process.exit(1);
-    }
+    // Optionally skip database connection check (useful for local e2e runs)
+    if (process.env.SKIP_DB_CHECK === '1') {
+      logger.info('SKIP_DB_CHECK set — skipping database connection test');
+    } else {
+      // Test database connection
+      const connected = await testConnection();
+      if (!connected) {
+        logger.error('Failed to connect to database');
+        process.exit(1);
+      }
 
-    logger.info('Database connection established');
+      logger.info('Database connection established');
+    }
 
     // Create and start server
     const app = createApp();
