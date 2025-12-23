@@ -1,0 +1,44 @@
+# Ignore backend files (not needed for frontend deployment)
+backend/
+
+# Ignore test files
+frontend/src/__tests__/
+frontend/src/test/
+*.test.js
+*.test.jsx
+*.spec.js
+*.spec.jsx
+
+# Ignore documentation
+*.md
+!README.md
+docs/
+
+# Ignore development files
+.git/
+.github/
+.vscode/
+.idea/
+
+# Ignore build artifacts that shouldn't be in source
+frontend/node_modules/
+frontend/dist/
+
+# Ignore environment files
+.env*
+!.env.production.example
+!.env.example
+
+# Ignore coverage and test artifacts
+coverage/
+htmlcov/
+.pytest_cache/
+.coverage
+
+# Docker files not needed
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Examples and documentation
+examples/

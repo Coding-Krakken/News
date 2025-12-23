@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # News Application
 
 A full-stack news application with secure user authentication, profiles, bookmarks, saved filters, and personalized news feeds.
@@ -81,256 +82,282 @@ psql -h localhost -U news_user -d news_db < migrations/1702000005_create_refresh
 Start the backend server:
 
 ```bash
-npm run dev
-```
+**News Analytics Platform**
 
-The backend API will be available at `http://localhost:3000`.
+A comprehensive news analytics platform that ingests articles from multiple sources, clusters them into story events, computes coverage statistics, and provides AI-powered fact-checking capabilities.
 
-### 4. Set Up the Frontend
+This repository contains both the core analytics platform and a complete user authentication and personalization system (user profiles, bookmarks, saved filters, and custom feeds).
 
+## Quick Start
+
+### Local Development (Docker Compose)
 ```bash
-cd ../frontend
-npm install
-cp .env.example .env
+git clone https://github.com/Coding-Krakken/News.git
+cd News
+cp backend/.env.example backend/.env
+# Edit backend/.env if needed
+docker compose up
 ```
 
-Start the frontend development server:
+Visit http://localhost:3000 (backend) and http://localhost:3001 (frontend) for the app.
 
-```bash
-npm run dev
-```
+### Production Deployment
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment instructions, including cloud deployment options and environment configuration.
 
-The frontend will be available at `http://localhost:3001`.
+## Features
 
-## Environment Variables
+### Core Analytics
+- Multi-source news ingestion (RSS/APIs)
+- Story clustering (embeddings + DBSCAN)
+- Coverage analytics by source, category, geography, time, ideology
+- Fact extraction and cross-source corroboration
 
-### Backend (.env)
+### Authentication & Personalization
+- JWT-based authentication with refresh token rotation
+- Argon2id password hashing
+- User profiles (view/edit)
+- Bookmarks (articles & stories)
+- Saved filters (JSON queries)
+- Personalized custom feeds based on preferences
 
-```env
-# Server Configuration
-NODE_ENV=development
-PORT=3000
+## Tech Stack
 
-# Database Configuration
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=news_db
-DB_USER=news_user
-DB_PASSWORD=news_password
+### Backend
+- Node.js (Express) &/or FastAPI components
+- TypeScript & Python components in the repo
+- PostgreSQL and/or MongoDB depending on service
 
-# JWT Configuration
-JWT_ACCESS_SECRET=your-access-token-secret-change-in-production
-JWT_REFRESH_SECRET=your-refresh-token-secret-change-in-production
-JWT_ACCESS_EXPIRY=15m
-JWT_REFRESH_EXPIRY=7d
+### Frontend
+- React 18 with TypeScript
+- Vite for development
 
-# Security Configuration
-COOKIE_SECRET=your-cookie-secret-change-in-production
-
-# Rate Limiting
-RATE_LIMIT_WINDOW_MS=900000
-RATE_LIMIT_MAX_REQUESTS=100
-AUTH_RATE_LIMIT_MAX_REQUESTS=5
-
-# CORS Configuration
-CORS_ORIGIN=http://localhost:3001
-
-# Logging
-LOG_LEVEL=info
-```
-
-### Frontend (.env)
-
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
-## API Documentation
-
-### Authentication Endpoints
-
-#### POST /api/auth/signup
-Register a new user.
-
-**Request:**
-```json
-{
-  "email": "user@example.com",
-  "password": "SecurePass123",
-  "display_name": "John Doe" // optional
-}
-```
-
-**Response:**
-```json
-{
-  "user": {
-    "id": 1,
-    "email": "user@example.com",
-    "display_name": "John Doe",
-    "avatar_url": null,
-    "created_at": "2025-12-16T...",
-    "updated_at": "2025-12-16T..."
-  },
-  "accessToken": "eyJhbGciOiJI...",
-  "refreshToken": "eyJhbGciOiJI..."
-}
-```
-
-#### POST /api/auth/login
-Login with existing credentials.
-
-#### POST /api/auth/logout
-Logout and invalidate refresh token (requires authentication).
-
-#### GET /api/auth/me
-Get current user information (requires authentication).
-
-#### POST /api/auth/refresh
-Refresh access token using refresh token.
-
-### User Endpoints
-
-#### PATCH /api/users/me
-Update user profile (requires authentication).
-
-#### GET /api/users/me/preferences
-Get user preferences (requires authentication).
-
-#### PUT /api/users/me/preferences
-Update user preferences (requires authentication).
-
-### Bookmark Endpoints
-
-#### POST /api/bookmarks
-Create a bookmark (requires authentication).
-
-#### GET /api/bookmarks
-List user's bookmarks (requires authentication).
-
-#### DELETE /api/bookmarks/:id
-Delete a bookmark (requires authentication).
-
-### Saved Filter Endpoints
-
-#### POST /api/saved-filters
-Create a saved filter (requires authentication).
-
-#### GET /api/saved-filters
-List user's saved filters (requires authentication).
-
-#### PUT /api/saved-filters/:id
-Update a saved filter (requires authentication).
-
-#### DELETE /api/saved-filters/:id
-Delete a saved filter (requires authentication).
-
-### Feed Endpoints
-
-#### GET /api/feeds/custom
-Get personalized news feed (requires authentication).
-
-## Testing
-
-### Backend Tests
-
-Run all tests with coverage:
-```bash
-cd backend
-npm test
-```
-
-Run unit tests only:
-```bash
-npm run test:unit
-```
-
-Run integration tests only:
-```bash
-npm run test:integration
-```
-
-### Frontend Tests
-
-Run frontend tests:
-```bash
-cd frontend
-npm test
-```
-
-### E2E Tests
-
-Run end-to-end tests with Playwright:
-```bash
-cd frontend
-npm run test:e2e
-```
-
-## Security Features
-
-### Authentication & Authorization
-- JWT-based authentication with short-lived access tokens (15 minutes)
-- Refresh token rotation for enhanced security
-- Secure httpOnly cookies with SameSite protection
-- Server-side token invalidation on logout
-
-### Password Security
-- Argon2id hashing algorithm (recommended by OWASP)
-- Strong password requirements (min 8 chars, uppercase, lowercase, number)
-- No password storage in logs or responses
-
-### API Security
-- Rate limiting on all endpoints (100 requests per 15 minutes)
-- Stricter rate limiting on auth endpoints (5 requests per 15 minutes)
-- CORS with explicit origin allowlist
-- Helmet.js security headers
-- Input validation with express-validator
-- Protection against user enumeration
-
-### Data Privacy
-- PII redaction in logs (email, password, tokens)
-- No sensitive data in error messages
-- User data isolation (horizontal privilege prevention)
+### Testing
+- Jest for unit/integration tests
+- Playwright for E2E tests
 
 ## Development
 
-### Linting
+Follow the Quick Start above to start services locally. See `backend/` and `frontend/` directories for per-service instructions and scripts.
 
-Backend:
+
+## Running the Application
+
+### Start MongoDB
+If running locally:
+```bash
+mongod
+```
+
+### Start Backend Server
 ```bash
 cd backend
-npm run lint
-npm run lint:fix
+source venv/bin/activate
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Frontend:
+The API will be available at http://localhost:8000
+
+API Documentation: http://localhost:8000/docs
+
+### Start Frontend Development Server
 ```bash
 cd frontend
-npm run lint
-npm run lint:fix
+npm run dev
 ```
 
-### Building for Production
+The application will be available at http://localhost:3000
 
-Backend:
+## Usage
+
+### 1. Ingest Articles
+Click "Ingest Articles" to fetch latest articles from configured news sources. The platform comes with several pre-configured sources including BBC News, CNN, Reuters, and The Guardian.
+
+### 2. Cluster Stories
+After ingesting articles, click "Cluster Stories" to group related articles into story events using machine learning.
+
+### 3. Explore Stories
+Browse the story cards to see:
+- Number of articles covering each story
+- Which sources covered the story
+- Story category and metadata
+
+### 4. Filter Stories
+Use the faceted filters to include or exclude:
+- Specific news sources
+- Categories
+- Geographic regions
+- Ideological perspectives
+
+### 5. View Story Details
+Click on any story to see:
+- All articles in the story
+- Coverage matrix showing which sources covered it
+- Option to generate AI fact analysis
+
+### 6. Generate Fact Ledger
+Click "Generate Fact Ledger" on any story to:
+- Extract claims from all articles
+- Cross-corroborate facts across sources
+- See which claims are confirmed, disputed, or uncorroborated
+- View attribution for each claim
+
+### 7. View Analytics
+Navigate to the Analytics page to see comprehensive statistics:
+- Total articles and stories
+- Breakdown by source, category, geography, ideology, and time
+
+## API Endpoints
+
+### Articles
+- `POST /api/articles/ingest` - Ingest articles from all sources
+- `GET /api/articles/` - Get all articles with filtering
+- `GET /api/articles/sources/list` - List configured sources
+- `POST /api/articles/sources/add` - Add a new source
+
+### Stories
+- `POST /api/stories/cluster` - Trigger story clustering
+- `GET /api/stories/` - Get all stories
+- `GET /api/stories/{story_id}` - Get specific story
+- `GET /api/stories/{story_id}/articles` - Get articles in story
+- `GET /api/stories/{story_id}/coverage` - Get coverage matrix
+
+### Analytics
+- `GET /api/analytics/stats` - Get coverage statistics
+- `GET /api/analytics/filter` - Filter articles by criteria
+- `GET /api/analytics/facets` - Get available filter options
+
+### Fact Checker
+- `POST /api/fact-checker/{story_id}` - Generate fact ledger
+- `GET /api/fact-checker/{story_id}` - Get existing fact ledger
+
+## Adding News Sources
+
+You can add new RSS sources through the API:
+
+```bash
+curl -X POST "http://localhost:8000/api/articles/sources/add" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "New Source",
+    "url": "https://example.com/rss",
+    "source_type": "rss",
+    "ideology": "center",
+    "geography": "United States"
+  }'
+```
+
+## Configuration
+
+### Clustering Parameters
+Edit `backend/app/services/clustering.py` to adjust:
+- `similarity_threshold`: Minimum similarity for clustering (default: 0.7)
+- `time_window_hours`: Time window for clustering articles (default: 72 hours)
+
+### AI Fact-Checking
+The fact-checking feature works in two modes:
+1. **With OpenAI API**: Uses GPT-3.5 for advanced claim extraction
+2. **Fallback Mode**: Simple rule-based extraction if API key is not configured
+
+## Technology Stack
+
+**Backend:**
+- FastAPI - Web framework
+- Motor - Async MongoDB driver
+- Sentence Transformers - NLP embeddings
+- scikit-learn - Machine learning (DBSCAN clustering)
+- feedparser - RSS parsing
+- OpenAI - AI claim extraction
+- BeautifulSoup - HTML parsing
+
+**Frontend:**
+- React 18 - UI framework
+- Vite - Build tool
+- Axios - HTTP client
+
+**Testing:**
+- **Backend**: pytest, pytest-asyncio, pytest-cov, httpx, mongomock-motor
+- **Frontend**: Vitest, React Testing Library, jsdom, MSW
+
+**Database:**
+- MongoDB - Document storage
+
+## Development
+
+### Backend Tests
+
+The platform includes a comprehensive test suite with **95%+ code coverage**:
+
 ```bash
 cd backend
-npm run build
-npm start
+./run_tests.sh
 ```
 
-Frontend:
+**Test Statistics:**
+- 112+ test functions across 11 test files
+- Unit, Integration, and E2E tests
+- Mock database for testing
+- Async test support
+
+**Run specific tests:**
+```bash
+pytest tests/unit/ -v           # Unit tests
+pytest tests/integration/ -v     # Integration tests
+pytest tests/e2e/ -v            # End-to-end tests
+```
+
+**Coverage report:**
+```bash
+pytest --cov=app --cov-report=html
+open htmlcov/index.html
+```
+
+See `backend/tests/README.md` for detailed test documentation.
+
+### Frontend Tests
+
+Comprehensive frontend test suite with **80%+ code coverage**:
+
+```bash
+cd frontend
+./run_tests.sh
+```
+
+**Test Statistics:**
+- 70+ test functions across 7 test files
+- Component, Page, and Service tests
+- React Testing Library
+- Mock API responses
+
+**Run specific tests:**
+```bash
+npm test                    # Watch mode
+npm run test:coverage       # With coverage
+npm run test:ui             # UI mode
+```
+
+**Coverage report:**
+```bash
+npm run test:coverage
+open coverage/index.html
+```
+
+See `frontend/TEST_README.md` for detailed test documentation.
+
+### Frontend Build
 ```bash
 cd frontend
 npm run build
-npm run preview
 ```
 
+Production build will be in `frontend/dist/`
+
+>>>>>>> origin/main
 ## Project Structure
 
 ```
 News/
 ├── backend/
+<<<<<<< HEAD
 │   ├── migrations/          # Database migrations
 │   ├── src/
 │   │   ├── config/         # Configuration files
@@ -367,6 +394,79 @@ News/
 3. Make your changes
 4. Ensure all tests pass
 5. Submit a pull request
+
+## License
+
+MIT
+=======
+│   ├── app/
+│   │   ├── routes/          # API endpoints
+│   │   ├── services/        # Business logic
+<!--
+Unified README: combines the analytics platform documentation with the
+authentication & personalization features added in this branch.
+-->
+
+# News Analytics Platform + Personalization
+
+A comprehensive news analytics platform that ingests articles from multiple sources, clusters them into story events, computes coverage statistics, and provides AI-powered fact-checking capabilities.
+
+This repository includes both the core analytics services and a complete
+user authentication and personalization system (user profiles, bookmarks,
+saved filters, and custom feeds).
+
+## Quick Start (local)
+
+1. Clone the repo:
+
+```bash
+git clone https://github.com/Coding-Krakken/News.git
+cd News
+```
+
+2. Copy example envs and start services (using Docker Compose):
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+docker compose up --build
+```
+
+3. Backend API: http://localhost:3000 (or 8000 for analytics services)
+   Frontend: http://localhost:3001 (or 3000 depending on service)
+
+See `backend/` and `frontend/` directories for service-specific scripts and
+testing instructions.
+
+## Major Features
+
+- Multi-source ingestion, story clustering, and coverage analytics
+- AI-powered claim extraction and fact corroboration
+- User authentication (JWT + refresh tokens)
+- User profiles, bookmarks, saved filters
+- Personalized custom feeds
+
+## Documentation
+
+- Deployment: DEPLOYMENT.md
+- Security: docs/SECURITY.md
+- User guide: docs/USER_GUIDE.md
+- Implementation notes: IMPLEMENTATION_SUMMARY.md
+
+## Development & Tests
+
+Each subproject contains its own test scripts. Typical commands:
+
+```bash
+# Backend
+cd backend && npm install && npm test
+
+# Frontend
+cd frontend && npm install && npm test
+
+# E2E (Playwright)
+cd frontend && npm run test:e2e
+```
 
 ## License
 

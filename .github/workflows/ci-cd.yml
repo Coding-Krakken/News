@@ -1,0 +1,100 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, copilot/build-news-analytics-platform, copilot/add-dual-deployment-support ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+      - name: Run backend tests
+        run: |
+          source venv/bin/activate
+          ./run_tests.sh
+      - name: Upload backend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/htmlcov/
+
+  frontend-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run frontend tests
+        run: ./run_tests.sh
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+
+  # Test Vercel-like build environment
+  vercel-build-test:
+    runs-on: ubuntu-latest
+    needs: [frontend-test]
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js (Vercel version)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Install dependencies
+        run: npm ci
+      - name: Build frontend (Vercel simulation)
+        env:
+          VITE_API_BASE_URL: https://example-api.railway.app/api
+          VITE_ENVIRONMENT: production
+        run: npm run build
+      - name: Verify build artifacts
+        run: |
+          test -f dist/index.html || (echo "Build failed: index.html not found" && exit 1)
+          echo "✓ Build artifacts verified"
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [backend-test, frontend-test]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install docker-compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Build Docker images
+        run: |
+          docker-compose build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [docker-build, vercel-build-test]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to production
+        run: echo "Deploy step goes here (e.g., push to registry, trigger deployment)"
