@@ -3,7 +3,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { config } from './config';
-import { logger } from './utils/logger';
 import { generalLimiter } from './middleware/rateLimiter.middleware';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 

@@ -2,12 +2,17 @@
   "parser": "@typescript-eslint/parser",
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
   ],
   "parserOptions": {
     "ecmaVersion": 2020,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
+  "plugins": ["react-refresh"],
   "rules": {
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -16,6 +21,12 @@
       {
         "argsIgnorePattern": "^_"
       }
-    ]
+    ],
+    "react-refresh/only-export-components": "warn"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }

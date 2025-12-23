@@ -29,6 +29,7 @@ export interface UserResponse {
 }
 
 export function toUserResponse(user: User): UserResponse {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password_hash, ...userResponse } = user;
   return userResponse;
 }
