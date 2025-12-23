@@ -46,10 +46,11 @@ beforeAll(async () => {
       // Release the advisory lock so other workers can proceed
       try {
         await db.query(`SELECT pg_advisory_unlock(${LOCK_KEY});`);
-      } catch (unlockErr) {
+      } catch (unlockErr: unknown) {
         // best-effort unlock; log and continue
         // eslint-disable-next-line no-console
-        console.warn('Failed to release advisory lock:', unlockErr?.message || unlockErr);
+        const unlockMsg = unlockErr instanceof Error ? unlockErr.message : String(unlockErr);
+        console.warn('Failed to release advisory lock:', unlockMsg);
       }
     }
   }
