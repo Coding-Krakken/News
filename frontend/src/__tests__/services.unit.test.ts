@@ -54,6 +54,8 @@ describe('service modules (unit, mocked apiClient)', () => {
     (apiClient.delete as jest.Mock).mockResolvedValue({});
     await bookmarkService.delete(1);
     expect(apiClient.delete).toHaveBeenCalledWith('/bookmarks/1');
+    await bookmarkService.deleteByTarget('article', 'a1');
+    expect(apiClient.delete).toHaveBeenCalledWith('/bookmarks?target_type=article&target_id=a1');
   });
 
   it('filterService create/list/update/delete', async () => {

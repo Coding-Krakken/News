@@ -34,6 +34,9 @@ module.exports = {
     'src/services/filterService.ts',
     'src/services/userService.ts',
     'src/services/bookmarkService.ts',
+    'src/components/ProtectedRoute.tsx',
+    'src/contexts/*.{ts,tsx}',
+    'src/services/apiClient.ts',
     '!src/**/*.d.ts',
   ],
   coverageThreshold: {
