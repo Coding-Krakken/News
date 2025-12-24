@@ -35,14 +35,12 @@ module.exports = {
     '!src/main.tsx',
     '!src/vite-env.d.ts',
   ],
-  // TEMPORARY: Coverage threshold set to 0% pending test implementation
-  // MUST be restored to 100% once tests are written
   coverageThreshold: {
     global: {
-      branches: 0,
-      functions: 0,
-      lines: 0,
-      statements: 0,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
   },
 };

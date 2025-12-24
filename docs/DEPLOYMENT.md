@@ -83,8 +83,8 @@ cd backend
 npm ci --production
 npm run build
 
-# Install PM2 globally
-npm install -g pm2
+# Install PM2 globally (pinned version for supply-chain security)
+npm install -g pm2@5.3.0
 
 # Start with PM2
 pm2 start dist/index.js --name news-api
