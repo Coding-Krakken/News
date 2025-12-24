@@ -9,6 +9,16 @@ import { User } from '../models/user.model';
 
 export class TestHelpers {
   static async createUser(email = 'test@example.com', password = 'Test1234'): Promise<User> {
+    // If a user with this email already exists (e.g. test DB not fully cleaned), return it
+    const existing = await userRepository.findByEmail(email);
+    if (existing) {
+      const pref = await preferenceRepository.findByUserId(existing.id);
+      if (!pref) {
+        await preferenceRepository.create(existing.id);
+      }
+      return existing;
+    }
+
     const password_hash = await hashPassword(password);
     const user = await userRepository.create({
       email,
@@ -16,7 +26,11 @@ export class TestHelpers {
       password_hash,
       display_name: 'Test User',
     });
-    await preferenceRepository.create(user.id);
+    // Ensure preferences exist for the created user
+    const pref = await preferenceRepository.findByUserId(user.id);
+    if (!pref) {
+      await preferenceRepository.create(user.id);
+    }
     return user;
   }
 

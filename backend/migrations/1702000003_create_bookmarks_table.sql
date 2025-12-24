@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   UNIQUE(user_id, target_type, target_id)
 );
 
-CREATE INDEX idx_bookmarks_user_id ON bookmarks(user_id);
-CREATE INDEX idx_bookmarks_target ON bookmarks(target_type, target_id);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_user_id ON bookmarks(user_id);
+CREATE INDEX IF NOT EXISTS idx_bookmarks_target ON bookmarks(target_type, target_id);
