@@ -10,7 +10,14 @@ CREATE TABLE IF NOT EXISTS saved_filters (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_saved_filters_user_id ON saved_filters(user_id);
+CREATE INDEX IF NOT EXISTS idx_saved_filters_user_id ON saved_filters(user_id);
 
-CREATE TRIGGER update_saved_filters_updated_at BEFORE UPDATE ON saved_filters
-FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- Trigger to automatically update updated_at (guarded)
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname = 'update_saved_filters_updated_at') THEN
+    CREATE TRIGGER update_saved_filters_updated_at BEFORE UPDATE ON saved_filters
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+  END IF;
+END;
+$$;
