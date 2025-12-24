@@ -6,6 +6,7 @@ from slowapi.errors import RateLimitExceeded
 
 from .config import get_settings, validate_config
 from .database import init_db, close_db
+import os
 from .routes import articles, stories, analytics, fact_checker, auth, admin
 from .utils.rate_limit import limiter
 
@@ -13,7 +14,11 @@ from .utils.rate_limit import limiter
 async def lifespan(app: FastAPI):
     # Startup
     validate_config()  # Validate configuration before starting
-    await init_db()
+    # Allow skipping DB initialization for local e2e/debug runs by setting SKIP_DB_CHECK=1
+    if os.environ.get('SKIP_DB_CHECK') == '1':
+        print('SKIP_DB_CHECK set — skipping database initialization')
+    else:
+        await init_db()
     yield
     # Shutdown
     await close_db()
