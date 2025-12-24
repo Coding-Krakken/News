@@ -20,7 +20,10 @@ export function generateAccessToken(payload: TokenPayload): string {
  * Generate JWT refresh token
  */
 export function generateRefreshToken(payload: TokenPayload): string {
-  return jwt.sign(payload, config.jwt.refreshSecret, {
+  // Include a random JWT ID to ensure refresh tokens are unique even when
+  // generated in quick succession with identical payloads.
+  const jwtId = crypto.randomBytes(8).toString('hex');
+  return jwt.sign({ ...payload, jti: jwtId }, config.jwt.refreshSecret, {
     expiresIn: config.jwt.refreshExpiry,
   } as jwt.SignOptions);
 }

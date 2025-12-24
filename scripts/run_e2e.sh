@@ -41,11 +41,19 @@ function wait_for_port() {
   done
 }
 
-start_postgres
+DB_HOST=${DB_HOST:-localhost}
+DB_PORT=${DB_PORT:-5432}
 
-# Wait for Postgres
-if ! wait_for_port localhost 5432 60; then
-  echo "[e2e] Postgres not available on 5432" >&2
+# If running in CI, a service may already provide Postgres (GitHub Actions services).
+# In that case skip starting docker-compose to avoid host port collisions.
+if [ "${CI:-}" = "true" ]; then
+  echo "[e2e] CI environment detected; skipping docker-compose Postgres startup"
+else
+  start_postgres
+fi
+
+if ! wait_for_port "$DB_HOST" "$DB_PORT" 60; then
+  echo "[e2e] Postgres not available on ${DB_HOST}:${DB_PORT}" >&2
   exit 1
 fi
 

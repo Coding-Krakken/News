@@ -234,6 +234,10 @@ export class AuthController {
         refreshToken: newRefreshToken,
       });
     } catch (error) {
+      // Log to console as well to aid test debugging
+      // (logger may be silenced during tests)
+      // eslint-disable-next-line no-console
+      console.error('Refresh token error', error);
       logger.error('Refresh token error', { error });
       res.status(500).json({ error: 'Token refresh failed' });
     }

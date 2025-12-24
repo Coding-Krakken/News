@@ -2,14 +2,23 @@ import { query } from '../config/database';
 import { RefreshToken } from '../models/token.model';
 
 export class TokenRepository {
-  async create(tokenHash: string, userId: number, expiresAt: Date): Promise<RefreshToken> {
-    const result = await query(
-      `INSERT INTO refresh_tokens (token_hash, user_id, expires_at)
-       VALUES ($1, $2, $3)
-       RETURNING *`,
-      [tokenHash, userId, expiresAt]
-    );
-    return result.rows[0];
+  async create(tokenHash: string, userId: number, expiresAt: Date): Promise<RefreshToken | null> {
+    try {
+      const result = await query(
+        `INSERT INTO refresh_tokens (token_hash, user_id, expires_at)
+         VALUES ($1, $2, $3)
+         RETURNING *`,
+        [tokenHash, userId, expiresAt]
+      );
+      return result.rows[0];
+    } catch (err: any) {
+      // Handle unique constraint collisions by returning existing token row
+      if (err && (err.code === '23505' || (err.message && err.message.includes('duplicate key value')))) {
+        const existing = await query('SELECT * FROM refresh_tokens WHERE token_hash = $1', [tokenHash]);
+        return existing.rows[0] || null;
+      }
+      throw err;
+    }
   }
 
   async findByHash(tokenHash: string): Promise<RefreshToken | null> {
