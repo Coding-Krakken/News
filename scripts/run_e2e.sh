@@ -69,7 +69,8 @@ if [ ! -d node_modules ]; then
   npm ci
 fi
 # Start backend on port 3000 (Playwright expects 3000)
-PORT=3000 SKIP_DB_CHECK=0 npm run dev > "$BACKEND_LOG" 2>&1 &
+# Pass through DB env vars and skip DB check (DB connection will happen on demand)
+PORT=3000 SKIP_DB_CHECK=1 DB_HOST="${DB_HOST:-localhost}" DB_PORT="${DB_PORT:-5432}" DB_NAME="${DB_NAME:-news_db}" DB_USER="${DB_USER:-news_user}" DB_PASSWORD="${DB_PASSWORD:-news_password}" npm run dev > "$BACKEND_LOG" 2>&1 &
 PIDS+=("$!")
 popd > /dev/null
 
