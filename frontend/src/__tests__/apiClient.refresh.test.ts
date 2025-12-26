@@ -24,7 +24,7 @@ describe('ApiClient refreshToken', () => {
       put: jest.fn(),
       patch: jest.fn(),
       delete: jest.fn(),
-    }));
+    } as unknown as import('axios').AxiosInstance));
 
     let apiClient: any;
     jest.isolateModules(() => {
@@ -50,7 +50,7 @@ describe('ApiClient refreshToken', () => {
       put: jest.fn(),
       patch: jest.fn(),
       delete: jest.fn(),
-    }));
+    } as unknown as import('axios').AxiosInstance));
 
     let apiClient: any;
     jest.isolateModules(() => {

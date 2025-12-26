@@ -38,6 +38,10 @@ class ApiClient {
       async (error: AxiosError) => {
         const originalRequest = error.config as (AxiosRequestConfig & { _retry?: boolean }) | undefined;
 
+        if (!originalRequest) {
+          return Promise.reject(error);
+        }
+
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
@@ -45,8 +49,9 @@ class ApiClient {
             const newToken = await this.refreshToken();
             if (newToken) {
               this.setAccessToken(newToken);
-              originalRequest.headers.Authorization = `Bearer ${newToken}`;
-              return this.client(originalRequest);
+              originalRequest.headers = originalRequest.headers ?? {};
+              (originalRequest.headers as Record<string, string>).Authorization = `Bearer ${newToken}`;
+              return this.client(originalRequest as AxiosRequestConfig);
             }
           } catch (refreshError) {
             this.clearTokens();

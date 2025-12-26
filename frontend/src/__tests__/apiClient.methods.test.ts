@@ -17,9 +17,9 @@ describe('ApiClient methods and token helpers', () => {
       put: jest.fn().mockResolvedValue({ data: 'u' }),
       patch: jest.fn().mockResolvedValue({ data: 'pa' }),
       delete: jest.fn().mockResolvedValue({ data: 'd' }),
-    } as any;
+    } as unknown as import('axios').AxiosInstance;
 
-    mockedAxios.create = jest.fn(() => clientMock);
+    mockedAxios.create = jest.fn(() => clientMock as unknown as import('axios').AxiosInstance);
 
     let apiClient: any;
     jest.isolateModules(() => {
@@ -37,7 +37,7 @@ describe('ApiClient methods and token helpers', () => {
   });
 
   it('setAccessToken, setRefreshToken and clearTokens operate on localStorage', () => {
-    mockedAxios.create = jest.fn(() => ({ interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } } } as any));
+    mockedAxios.create = jest.fn(() => ({ interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } } } as unknown as import('axios').AxiosInstance));
     let apiClient: any;
     jest.isolateModules(() => {
       apiClient = require('../services/apiClient').apiClient;
@@ -54,7 +54,7 @@ describe('ApiClient methods and token helpers', () => {
   });
 
   it('concurrent refreshToken calls reuse the same promise', async () => {
-    mockedAxios.create = jest.fn(() => ({ interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } } } as any));
+    mockedAxios.create = jest.fn(() => ({ interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } } } as unknown as import('axios').AxiosInstance));
     mockedAxios.post.mockImplementation(() => new Promise((res) => setTimeout(() => res({ data: { accessToken: 'acc', refreshToken: 'ref' } }), 10)));
 
     let apiClient: any;

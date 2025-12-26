@@ -17,7 +17,7 @@ describe('ApiClient uncovered branches', () => {
         request: { use: (s: any, e: any) => { reqHandler = s; reqErrorHandler = e; } },
         response: { use: jest.fn() },
       },
-    } as any));
+    } as unknown as import('axios').AxiosInstance));
 
     let apiClient: any;
     jest.isolateModules(() => {
@@ -49,7 +49,7 @@ describe('ApiClient uncovered branches', () => {
         request: { use: jest.fn() },
         response: { use: (s: any, e: any) => { responseErrHandler = e; } },
       },
-    } as any));
+    } as unknown as import('axios').AxiosInstance));
 
     let apiClient: any;
     jest.isolateModules(() => {
@@ -69,7 +69,7 @@ describe('ApiClient uncovered branches', () => {
         request: { use: jest.fn() },
         response: { use: (s: any, e: any) => { responseErrHandler = e; } },
       },
-    } as any));
+    } as unknown as import('axios').AxiosInstance));
 
     let apiClient: any;
     jest.isolateModules(() => {

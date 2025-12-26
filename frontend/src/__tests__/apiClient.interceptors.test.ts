@@ -25,7 +25,7 @@ describe('ApiClient interceptors', () => {
       put: jest.fn(),
       patch: jest.fn(),
       delete: jest.fn(),
-    }));
+    } as unknown as import('axios').AxiosInstance));
 
     let apiClient: any;
     jest.isolateModules(() => {
@@ -50,7 +50,7 @@ describe('ApiClient interceptors', () => {
       put: jest.fn(),
       patch: jest.fn(),
       delete: jest.fn(),
-    }));
+    } as unknown as import('axios').AxiosInstance));
 
     jest.isolateModules(() => {
       require('../services/apiClient');
@@ -72,7 +72,7 @@ describe('ApiClient interceptors', () => {
       delete: jest.fn(),
     } as any;
 
-    mockedAxios.create = jest.fn(() => clientMock);
+    mockedAxios.create = jest.fn(() => clientMock as unknown as import('axios').AxiosInstance);
     // axios.post (global) is used for refresh
     mockedAxios.post.mockResolvedValue({ data: { accessToken: 'ref-access', refreshToken: 'ref-refresh' } });
     clientMock.get.mockResolvedValue({ data: 'ok' });
@@ -114,7 +114,7 @@ describe('ApiClient interceptors', () => {
       put: jest.fn(),
       patch: jest.fn(),
       delete: jest.fn(),
-    }));
+    } as unknown as import('axios').AxiosInstance));
 
     let apiClient: any;
     jest.isolateModules(() => {
@@ -142,7 +142,7 @@ describe('ApiClient interceptors', () => {
       put: jest.fn(),
       patch: jest.fn(),
       delete: jest.fn(),
-    }));
+    } as unknown as import('axios').AxiosInstance));
 
     // make axios.post (refresh) reject
     mockedAxios.post.mockRejectedValue(new Error('refresh failed'));
@@ -185,7 +185,7 @@ describe('ApiClient interceptors', () => {
     callableClient.delete = jest.fn();
 
     // Ensure axios.create returns our callable client before importing the module
-    mockedAxios.create = jest.fn(() => callableClient as any);
+    mockedAxios.create = jest.fn(() => callableClient as unknown as import('axios').AxiosInstance);
     mockedAxios.post.mockResolvedValue({ data: { accessToken: 'ref-access', refreshToken: 'ref-refresh' } });
 
     // Require the module so ApiClient is constructed with our callable client and registers handlers
