@@ -6,23 +6,30 @@ from slowapi.errors import RateLimitExceeded
 
 from .config import get_settings, validate_config
 from .database import init_db, close_db
+import os
 from .routes import articles, stories, analytics, fact_checker, auth, admin
 from .utils.rate_limit import limiter
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     validate_config()  # Validate configuration before starting
-    await init_db()
+    # Allow skipping DB initialization for local e2e/debug runs by setting SKIP_DB_CHECK=1
+    if os.environ.get("SKIP_DB_CHECK") == "1":
+        print("SKIP_DB_CHECK set — skipping database initialization")
+    else:
+        await init_db()
     yield
     # Shutdown
     await close_db()
+
 
 app = FastAPI(
     title="News Analytics Platform",
     description="A platform for ingesting, clustering, and analyzing news from multiple sources",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Add rate limiter
@@ -45,11 +52,15 @@ app.include_router(admin.router, prefix="/api/admin", tags=["admin"])
 app.include_router(articles.router, prefix="/api/articles", tags=["articles"])
 app.include_router(stories.router, prefix="/api/stories", tags=["stories"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["analytics"])
-app.include_router(fact_checker.router, prefix="/api/fact-checker", tags=["fact-checker"])
+app.include_router(
+    fact_checker.router, prefix="/api/fact-checker", tags=["fact-checker"]
+)
+
 
 @app.get("/")
 async def root():
     return {"message": "News Analytics Platform API", "version": "1.0.0"}
+
 
 @app.get("/health")
 async def health_check():

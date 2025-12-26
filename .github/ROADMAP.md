@@ -8,13 +8,13 @@ This document provides a comprehensive index of all GitHub issues created for th
 
 ## 📋 Quick Navigation
 
-| Epic | Parent Issue | Sub-Issues | Status |
-|------|-------------|-----------|--------|
+| Epic                      | Parent Issue                                            | Sub-Issues  | Status     |
+| ------------------------- | ------------------------------------------------------- | ----------- | ---------- |
 | Performance & Reliability | [#11](https://github.com/Coding-Krakken/News/issues/11) | #16-#24 (9) | ✅ Created |
-| Security & Compliance | [#12](https://github.com/Coding-Krakken/News/issues/12) | #26-#34 (9) | ✅ Created |
-| API & Integrations | [#13](https://github.com/Coding-Krakken/News/issues/13) | #36-#44 (9) | ✅ Created |
-| i18n & Accessibility | [#14](https://github.com/Coding-Krakken/News/issues/14) | #46-#54 (9) | ✅ Created |
-| Docs & Community | [#15](https://github.com/Coding-Krakken/News/issues/15) | #55-#63 (9) | ✅ Created |
+| Security & Compliance     | [#12](https://github.com/Coding-Krakken/News/issues/12) | #26-#34 (9) | ✅ Created |
+| API & Integrations        | [#13](https://github.com/Coding-Krakken/News/issues/13) | #36-#44 (9) | ✅ Created |
+| i18n & Accessibility      | [#14](https://github.com/Coding-Krakken/News/issues/14) | #46-#54 (9) | ✅ Created |
+| Docs & Community          | [#15](https://github.com/Coding-Krakken/News/issues/15) | #55-#63 (9) | ✅ Created |
 
 ---
 
@@ -23,6 +23,7 @@ This document provides a comprehensive index of all GitHub issues created for th
 **Goal**: Deliver a high-performance, globally available platform with zero-downtime deployments and automatic failover.
 
 ### Sub-Issues
+
 1. **[#16 - Caching Strategy & Implementation](https://github.com/Coding-Krakken/News/issues/16)**
    - Redis caching, invalidation strategy, cache warming, monitoring
 
@@ -57,6 +58,7 @@ This document provides a comprehensive index of all GitHub issues created for th
 **Goal**: Make platform compliant with GDPR/CCPA and hardened against common attacks.
 
 ### Sub-Issues
+
 1. **[#26 - Privacy Controls & Data Rights](https://github.com/Coding-Krakken/News/issues/26)**
    - Data export/import, account deletion, consent management, GDPR compliance
 
@@ -91,6 +93,7 @@ This document provides a comprehensive index of all GitHub issues created for th
 **Goal**: Open platform to third-party developers with stable API, plugins, and integrations.
 
 ### Sub-Issues
+
 1. **[#36 - Public API Design & Documentation](https://github.com/Coding-Krakken/News/issues/36)**
    - RESTful endpoints, OpenAPI/Swagger, interactive docs, SDKs
 
@@ -125,6 +128,7 @@ This document provides a comprehensive index of all GitHub issues created for th
 **Goal**: Support multiple languages and ensure WCAG 2.1 AA accessibility compliance.
 
 ### Sub-Issues
+
 1. **[#46 - Frontend Internationalization](https://github.com/Coding-Krakken/News/issues/46)**
    - i18n library, text extraction, language selector, date/time/number localization
 
@@ -159,6 +163,7 @@ This document provides a comprehensive index of all GitHub issues created for th
 **Goal**: Build knowledge base and support infrastructure with active community.
 
 ### Sub-Issues
+
 1. **[#55 - User Documentation](https://github.com/Coding-Krakken/News/issues/55)**
    - Getting started, feature overview, tutorials, filtering guide, glossary, best practices
 
@@ -190,33 +195,36 @@ This document provides a comprehensive index of all GitHub issues created for th
 
 ## 📊 Statistics
 
-| Metric | Value |
-|--------|-------|
-| **Total Epic Issues** | 5 |
-| **Total Sub-Issues** | 45 |
-| **Total Issues Created** | 50 |
-| **All Issues Linked** | ✅ Yes |
-| **Fully Described** | ✅ Yes |
-| **Acceptance Criteria** | ✅ All defined |
-| **Test Coverage Goals** | ✅ 100% per epic |
+| Metric                   | Value            |
+| ------------------------ | ---------------- |
+| **Total Epic Issues**    | 5                |
+| **Total Sub-Issues**     | 45               |
+| **Total Issues Created** | 50               |
+| **All Issues Linked**    | ✅ Yes           |
+| **Fully Described**      | ✅ Yes           |
+| **Acceptance Criteria**  | ✅ All defined   |
+| **Test Coverage Goals**  | ✅ 100% per epic |
 
 ---
 
 ## 🔗 How to Use This Roadmap
 
 ### For Project Managers
+
 - **View All Issues**: Filter by label or milestone
 - **Track Progress**: Use GitHub Projects for kanban-style board
 - **Generate Reports**: Export issues to track velocity
 - **Monitor Dependencies**: Cross-reference related issues
 
 ### For Developers
+
 1. **Find Your Work**: Click on epic → select sub-issue
 2. **Understand Context**: Each sub-issue has tasks, acceptance criteria, and notes
 3. **Track Progress**: Mark tasks complete as you work
 4. **Reference Documentation**: Links to parent epic for bigger picture
 
 ### For Product/Leadership
+
 - **Strategic View**: Read epic goals to understand roadmap direction
 - **Timeline Planning**: Each epic has defined completion gates
 - **Resource Planning**: Understand scope per epic (9 sub-issues each)
@@ -237,6 +245,7 @@ This document provides a comprehensive index of all GitHub issues created for th
 ## 📞 Questions or Clarifications?
 
 Refer to:
+
 - [Copilot Instructions](../.github/copilot-instructions.md) - Golden standards
 - [Epic Template](../.github/issues/template.md) - How epics are structured
 - Individual epic files in [`.github/issues/`](../.github/issues/) - Full details

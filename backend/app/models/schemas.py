@@ -6,12 +6,14 @@ from enum import Enum
 
 class UserRole(str, Enum):
     """User role enumeration"""
+
     USER = "user"
     ADMIN = "admin"
 
 
 class User(BaseModel):
     """User model"""
+
     username: str
     email: EmailStr
     full_name: Optional[str] = None
@@ -19,59 +21,62 @@ class User(BaseModel):
     role: UserRole = UserRole.USER
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     # User preferences
     bookmarked_stories: List[str] = Field(default_factory=list)
     bookmarked_articles: List[str] = Field(default_factory=list)
     saved_filters: dict = Field(default_factory=dict)
     notification_preferences: dict = Field(default_factory=dict)
-    
+
     class Config:
         json_schema_extra = {
             "example": {
                 "username": "johndoe",
                 "email": "john@example.com",
                 "full_name": "John Doe",
-                "role": "user"
+                "role": "user",
             }
         }
 
 
 class UserInDB(User):
     """User model with hashed password for database storage"""
+
     hashed_password: str
 
 
 class UserCreate(BaseModel):
     """Schema for user registration"""
+
     username: str
     email: EmailStr
     password: str
     full_name: Optional[str] = None
-    
-    @validator('username')
+
+    @validator("username")
     def username_alphanumeric(cls, v: str) -> str:
         if not v.isalnum():
-            raise ValueError('Username must be alphanumeric')
+            raise ValueError("Username must be alphanumeric")
         if len(v) < 3:
-            raise ValueError('Username must be at least 3 characters')
+            raise ValueError("Username must be at least 3 characters")
         return v
-    
-    @validator('password')
+
+    @validator("password")
     def password_strength(cls, v: str) -> str:
         if len(v) < 8:
-            raise ValueError('Password must be at least 8 characters')
+            raise ValueError("Password must be at least 8 characters")
         if not any(c.isupper() for c in v):
-            raise ValueError('Password must contain at least one uppercase letter')
+            raise ValueError("Password must contain at least one uppercase letter")
         if not any(c.islower() for c in v):
-            raise ValueError('Password must contain at least one lowercase letter')
+            raise ValueError("Password must contain at least one lowercase letter")
         if not any(c.isdigit() for c in v):
-            raise ValueError('Password must contain at least one digit')
+            raise ValueError("Password must contain at least one digit")
         return v
 
 
 class UserUpdate(BaseModel):
     """Schema for user profile updates"""
+
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
     notification_preferences: Optional[dict] = None
@@ -79,6 +84,7 @@ class UserUpdate(BaseModel):
 
 class Token(BaseModel):
     """JWT token response"""
+
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
@@ -86,12 +92,14 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     """Data stored in JWT token"""
+
     username: Optional[str] = None
     role: Optional[str] = None
 
 
 class Article(BaseModel):
     """Article model"""
+
     url: str
     title: str
     content: str
@@ -107,7 +115,7 @@ class Article(BaseModel):
     embedding: Optional[List[float]] = None
     story_id: Optional[str] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -119,12 +127,14 @@ class Article(BaseModel):
                 "published_date": "2024-01-01T12:00:00",
                 "category": "politics",
                 "geography": "United States",
-                "ideology": "center"
+                "ideology": "center",
             }
         }
 
+
 class Story(BaseModel):
     """Story cluster model"""
+
     story_id: str
     title: str
     summary: str
@@ -138,7 +148,7 @@ class Story(BaseModel):
     last_updated: datetime
     article_count: int = 0
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -148,12 +158,14 @@ class Story(BaseModel):
                 "article_ids": ["article1", "article2"],
                 "sources_covered": ["Source A", "Source B"],
                 "category": "politics",
-                "first_seen": "2024-01-01T12:00:00"
+                "first_seen": "2024-01-01T12:00:00",
             }
         }
 
+
 class Claim(BaseModel):
     """Individual claim model"""
+
     text: str
     attribution: str  # Which source made this claim
     article_url: str
@@ -163,16 +175,20 @@ class Claim(BaseModel):
     disputing_sources: List[str] = Field(default_factory=list)
     corroboration_count: int = 0
 
+
 class FactLedger(BaseModel):
     """Fact ledger for a story"""
+
     story_id: str
     confirmed_claims: List[Claim] = Field(default_factory=list)
     disputed_claims: List[Claim] = Field(default_factory=list)
     uncorroborated_claims: List[Claim] = Field(default_factory=list)
     generated_at: datetime = Field(default_factory=datetime.utcnow)
 
+
 class CoverageStats(BaseModel):
     """Coverage statistics"""
+
     by_source: dict = Field(default_factory=dict)
     by_category: dict = Field(default_factory=dict)
     by_geography: dict = Field(default_factory=dict)

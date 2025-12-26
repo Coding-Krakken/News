@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { analyticsService } from '../services/api';
+import React, { useState, useEffect } from "react";
+import { analyticsService } from "../services/api";
 
 function AnalyticsPage() {
   const [stats, setStats] = useState(null);
@@ -36,8 +36,8 @@ function AnalyticsPage() {
 
   return (
     <div>
-      <h2 style={{ marginBottom: '20px' }}>Coverage Analytics</h2>
-      
+      <h2 style={{ marginBottom: "20px" }}>Coverage Analytics</h2>
+
       <div className="stats-grid">
         <div className="stat-card">
           <h3>Overview</h3>
@@ -76,7 +76,9 @@ function AnalyticsPage() {
                 </li>
               ))
             ) : (
-              <li><span>No categories available</span></li>
+              <li>
+                <span>No categories available</span>
+              </li>
             )}
           </ul>
         </div>

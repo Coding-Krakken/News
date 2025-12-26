@@ -1,6 +1,7 @@
 """
 Unit tests for stories route helper to cover background clustering happy path.
 """
+
 import pytest
 
 
@@ -12,14 +13,17 @@ async def test_cluster_articles_background_success(monkeypatch):
     class FakeCursor:
         def __init__(self, data):
             self._data = data
+
         async def to_list(self, length=None):
             return self._data
 
     class FakeArticles:
         def __init__(self, data):
             self._data = data
+
         def find(self, *args, **kwargs):
             return FakeCursor(self._data)
+
         async def update_one(self, *args, **kwargs):
             return None
 
@@ -42,7 +46,7 @@ async def test_cluster_articles_background_success(monkeypatch):
         "category": None,
         "geography": None,
         "ideology": None,
-        "tags": []
+        "tags": [],
     }
 
     fake_db = FakeDB([article_dict])

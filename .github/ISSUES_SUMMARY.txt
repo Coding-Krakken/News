@@ -156,7 +156,7 @@ GITHUB PROJECT SETUP RECOMMENDATION
 ================================================================================
 
 1. Create GitHub Project: "News Analytics Platform v2.0"
-   
+
 2. Set up columns:
    - Backlog (all 50 issues)
    - Ready (approved for start)
@@ -257,11 +257,11 @@ Recommended Order of Completion:
 Phase 1 (Weeks 1-8):
   ✓ Epic #12 (Security) - Foundation for all other epics
   ✓ Epic #11 (Performance) - Needed for load testing other epics
-  
+
 Phase 2 (Weeks 9-18):
   ✓ Epic #13 (API) - Enables third-party integrations
   ✓ Epic #14 (i18n/a11y) - Parallel work, minimal dependencies
-  
+
 Phase 3 (Weeks 19-24):
   ✓ Epic #15 (Docs) - Consolidates knowledge from other epics
 

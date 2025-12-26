@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query, Depends
 from typing import List, Optional
-from datetime import datetime
 from ..database import get_database
-from ..models.schemas import Article
 from ..services.ingestion import NewsIngestionService
 
 router = APIRouter()
@@ -16,7 +14,7 @@ async def get_articles(
     limit: int = Query(50, ge=1, le=100),
     source: Optional[str] = None,
     category: Optional[str] = None,
-    db=Depends(get_database)
+    db=Depends(get_database),
 ):
     """Get articles with optional filtering"""
     try:
@@ -27,11 +25,17 @@ async def get_articles(
         if category:
             query["category"] = category
         # Fetch articles
-        cursor = db.articles.find(query, {"_id": 0}).sort("published_date", -1).skip(skip).limit(limit)
+        cursor = (
+            db.articles.find(query, {"_id": 0})
+            .sort("published_date", -1)
+            .skip(skip)
+            .limit(limit)
+        )
         articles = await cursor.to_list(length=limit)
         return articles
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/ingest", response_model=dict)
 async def ingest_articles(db=Depends(get_database)):
@@ -43,9 +47,7 @@ async def ingest_articles(db=Depends(get_database)):
             try:
                 # Insert article into database
                 await db.articles.update_one(
-                    {"url": article.url},
-                    {"$set": article.model_dump()},
-                    upsert=True
+                    {"url": article.url}, {"$set": article.model_dump()}, upsert=True
                 )
                 inserted_count += 1
             except Exception as e:
@@ -53,10 +55,11 @@ async def ingest_articles(db=Depends(get_database)):
         return {
             "message": "Articles ingested successfully",
             "total_ingested": inserted_count,
-            "total_sources": len(ingestion_service.get_sources())
+            "total_sources": len(ingestion_service.get_sources()),
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/sources/list", response_model=List[dict])
 async def get_sources():
@@ -64,13 +67,14 @@ async def get_sources():
     sources = ingestion_service.get_sources()
     return [dict(s) for s in sources]
 
+
 @router.post("/sources/add", response_model=dict)
 async def add_source(
     name: str,
     url: str,
     source_type: str = "rss",
     ideology: str = "center",
-    geography: str = "International"
+    geography: str = "International",
 ):
     """Add a new news source"""
     try:

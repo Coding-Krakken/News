@@ -1,0 +1,285 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      [
+        main,
+        develop,
+        copilot/build-news-analytics-platform,
+        copilot/add-dual-deployment-support,
+      ]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Backend (Python) tests and coverage
+  backend-python-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+      - name: Install python dev tools (black, ruff)
+        run: |
+          source venv/bin/activate
+          pip install black ruff
+      - name: Run python format and lint checks
+        run: |
+          source venv/bin/activate
+          black --check .
+          ruff check .
+      - name: Run backend tests
+        run: |
+          source venv/bin/activate
+          ./run_tests.sh
+      - name: Upload backend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage
+          path: backend/htmlcov/
+
+  # Backend (Node) integration tests that need a Postgres service
+  backend-node-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: news_user
+          POSTGRES_PASSWORD: news_password
+          POSTGRES_DB: news_test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure psql client and create compatibility DB role
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=news_password psql -h localhost -p 5433 -U news_user -c "CREATE ROLE root WITH LOGIN PASSWORD 'news_password';" || true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: backend/package-lock.json
+      - name: Install backend dependencies
+        run: npm ci
+      - name: Run database migrations (node backend)
+        env:
+          TEST_DB_HOST: localhost
+          TEST_DB_PORT: 5433
+          TEST_DB_NAME: news_test_db
+          TEST_DB_USER: news_user
+          TEST_DB_PASSWORD: news_password
+        run: |
+          for file in migrations/*.sql; do
+            PGPASSWORD=news_password psql -h localhost -p 5433 -U news_user -d news_test_db < "$file"
+          done
+      - name: Run linter
+        run: npm run lint
+      - name: Run tests with coverage
+        env:
+          NODE_ENV: test
+          TEST_DB_HOST: localhost
+          TEST_DB_PORT: 5433
+          TEST_DB_NAME: news_test_db
+          TEST_DB_USER: news_user
+          TEST_DB_PASSWORD: news_password
+        run: npm test
+      - name: Upload backend-node coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-node-coverage
+          path: ./coverage || ./coverage
+
+  # Frontend unit tests
+  frontend-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+      - name: Install dependencies
+        run: npm ci
+      - name: Run frontend lint
+        run: npm run lint
+      - name: Run frontend tests
+        run: ./run_tests.sh
+      - name: Upload frontend coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage
+          path: frontend/coverage/
+
+  # E2E tests (Playwright)
+  e2e-tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: news_user
+          POSTGRES_PASSWORD: news_password
+          POSTGRES_DB: news_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm ci
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm ci
+      - name: Install Playwright
+        working-directory: ./frontend
+        run: npx playwright install --with-deps chromium
+      - name: Ensure psql client and create compatibility DB role
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          PGPASSWORD=news_password psql -h localhost -p 5432 -U news_user -c "CREATE ROLE root WITH LOGIN PASSWORD 'news_password';" || true
+      - name: Run database migrations
+        working-directory: ./backend
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: news_db
+          DB_USER: news_user
+          DB_PASSWORD: news_password
+        run: |
+          for file in migrations/*.sql; do
+            PGPASSWORD=news_password psql -h localhost -p 5432 -U news_user -d news_db < "$file"
+          done
+      - name: Run E2E tests (local orchestration)
+        working-directory: .
+        env:
+          CI: true
+        run: npm run test:e2e:local
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+          retention-days: 30
+
+  # Build step (after tests)
+  build:
+    runs-on: ubuntu-latest
+    needs: [backend-python-test, backend-node-test, frontend-tests, docs-lint]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Build backend
+        working-directory: ./backend
+        run: |
+          npm ci
+          npm run build
+      - name: Build frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+  # Docker image build using docker-compose
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install docker-compose
+        run: sudo apt-get update && sudo apt-get install -y docker-compose
+      - name: Build Docker images
+        run: |
+          docker-compose build
+
+  # Deploy only on main branch
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to production
+        run: echo "Deploy step goes here (e.g., push to registry, trigger deployment)"
+
+    # Docs linting
+    docs-lint:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - name: Setup Node.js for markdownlint
+          uses: actions/setup-node@v4
+          with:
+            node-version: "18"
+        - name: Install markdownlint-cli
+          run: npm install -g markdownlint-cli@0.30.0
+        - name: Run markdownlint on repository
+          run: markdownlint "**/*.md" --ignore node_modules
+
+    pre-commit:
+      runs-on: ubuntu-latest
+      needs: [backend-python-test]
+      steps:
+        - uses: actions/checkout@v4
+        - name: Set up Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: "3.12"
+        - name: Install pre-commit
+          run: |
+            python -m pip install --upgrade pip
+            pip install pre-commit
+        - name: Run pre-commit hooks
+          run: |
+            pre-commit run --all-files || true
+
+    docs-smoke:
+      runs-on: ubuntu-latest
+      needs: [docs-lint]
+      steps:
+        - uses: actions/checkout@v4
+        - name: Setup Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: "18"
+        - name: Run docs smoke script
+          run: bash scripts/docs_smoke.sh

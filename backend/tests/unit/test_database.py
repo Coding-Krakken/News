@@ -1,6 +1,6 @@
 import pytest
-import types
 from app.database import init_db, close_db, get_database
+
 
 @pytest.mark.asyncio
 async def test_init_and_close_db(monkeypatch):
@@ -11,11 +11,15 @@ async def test_init_and_close_db(monkeypatch):
                 class DummyCollection:
                     async def create_index(self, *a, **kw):
                         return None
+
                 articles = DummyCollection()
                 stories = DummyCollection()
+
             return DummyDB()
+
         def close(self):
             pass
+
     monkeypatch.setattr("app.database.AsyncIOMotorClient", lambda url: DummyClient())
     await init_db()
     db = get_database()

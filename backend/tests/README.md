@@ -31,6 +31,7 @@ tests/
 ## Test Categories
 
 ### Unit Tests (`tests/unit/`)
+
 - **Purpose**: Test individual components in isolation
 - **Mocking**: External dependencies are mocked
 - **Coverage**: Models, services, utilities
@@ -40,6 +41,7 @@ tests/
   - Business rule enforcement
 
 ### Integration Tests (`tests/integration/`)
+
 - **Purpose**: Test API endpoints with database
 - **Mocking**: Uses mock database (mongomock-motor)
 - **Coverage**: API routes, request/response handling
@@ -49,6 +51,7 @@ tests/
   - Request validation
 
 ### End-to-End Tests (`tests/e2e/`)
+
 - **Purpose**: Test complete user workflows
 - **Mocking**: Minimal mocking, full system integration
 - **Coverage**: Multi-step processes
@@ -157,7 +160,7 @@ class TestNewsIngestionService:
     @pytest.fixture
     def service(self):
         return NewsIngestionService()
-    
+
     def test_add_source(self, service):
         initial_count = len(service.sources)
         service.add_source("Test", "url", "rss", "center", "US")
@@ -207,7 +210,7 @@ python_files = test_*.py
 python_classes = Test*
 python_functions = test_*
 asyncio_mode = auto
-addopts = 
+addopts =
     -v
     --cov=app
     --cov-report=html
@@ -217,6 +220,7 @@ addopts =
 ### Markers
 
 Tests can be marked with:
+
 - `@pytest.mark.unit` - Unit tests
 - `@pytest.mark.integration` - Integration tests
 - `@pytest.mark.e2e` - End-to-end tests
@@ -255,7 +259,7 @@ The test suite is designed for CI/CD integration:
     cd backend
     pip install -r requirements.txt
     pytest --cov=app --cov-report=xml
-    
+
 - name: Upload coverage
   uses: codecov/codecov-action@v3
   with:
@@ -286,24 +290,28 @@ def my_test_data():
 ### Common Issues
 
 **Issue**: Tests fail with import errors
+
 ```bash
 # Solution: Install dependencies
 pip install -r requirements.txt
 ```
 
 **Issue**: Async tests hang
+
 ```bash
 # Solution: Check asyncio_mode in pytest.ini
 asyncio_mode = auto
 ```
 
 **Issue**: Coverage below 95%
+
 ```bash
 # Solution: Run coverage report to find gaps
 pytest --cov=app --cov-report=term-missing
 ```
 
 **Issue**: MongoDB connection errors
+
 ```bash
 # Solution: Tests use mongomock, no real MongoDB needed
 # Check conftest.py for proper mock setup
@@ -321,6 +329,7 @@ pytest --cov=app --cov-report=term-missing
 ## Test Metrics
 
 Expected test metrics:
+
 - **Total Tests**: 100+
 - **Code Coverage**: ≥95%
 - **Test Execution Time**: <30 seconds
@@ -329,6 +338,7 @@ Expected test metrics:
 ## Contributing
 
 When adding new features:
+
 1. Write tests first (TDD approach)
 2. Ensure 95%+ coverage for new code
 3. Add integration tests for new endpoints

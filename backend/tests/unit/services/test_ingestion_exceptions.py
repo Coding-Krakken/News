@@ -1,4 +1,3 @@
-import pytest
 from unittest.mock import Mock
 
 
@@ -11,7 +10,7 @@ def test_parse_rss_entry_handles_beautifulsoup_exception(monkeypatch):
     def raise_bs(*args, **kwargs):
         raise Exception("bs error")
 
-    monkeypatch.setattr('app.services.ingestion.BeautifulSoup', raise_bs)
+    monkeypatch.setattr("app.services.ingestion.BeautifulSoup", raise_bs)
 
     entry = Mock()
     entry.link = "https://example.com/article"
@@ -19,7 +18,12 @@ def test_parse_rss_entry_handles_beautifulsoup_exception(monkeypatch):
     entry.summary = "<p>Some <b>HTML</b></p>"
     entry.published_parsed = (2025, 12, 15, 12, 0, 0, 0, 0, 0)
 
-    source = {"name": "Test", "url": "https://example.com", "ideology": "center", "geography": "US"}
+    source = {
+        "name": "Test",
+        "url": "https://example.com",
+        "ideology": "center",
+        "geography": "US",
+    }
 
     article = service._parse_rss_entry(entry, source)
     assert article is not None
@@ -35,7 +39,7 @@ def test_parse_rss_entry_handles_description_beautifulsoup_exception(monkeypatch
     def raise_bs(*args, **kwargs):
         raise Exception("bs error")
 
-    monkeypatch.setattr('app.services.ingestion.BeautifulSoup', raise_bs)
+    monkeypatch.setattr("app.services.ingestion.BeautifulSoup", raise_bs)
 
     entry = Mock()
     entry.link = "https://example.com/article2"
@@ -44,7 +48,12 @@ def test_parse_rss_entry_handles_description_beautifulsoup_exception(monkeypatch
     entry.description = "<div>Desc</div>"
     entry.published_parsed = (2025, 12, 15, 12, 0, 0, 0, 0, 0)
 
-    source = {"name": "Test", "url": "https://example.com", "ideology": "center", "geography": "US"}
+    source = {
+        "name": "Test",
+        "url": "https://example.com",
+        "ideology": "center",
+        "geography": "US",
+    }
 
     article = service._parse_rss_entry(entry, source)
     assert article is not None

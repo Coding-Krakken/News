@@ -1,7 +1,7 @@
-
 import pytest
 
 pytestmark = pytest.mark.asyncio
+
 
 @pytest.mark.integration
 class TestArticlesEdgeCases:
@@ -25,13 +25,14 @@ class TestArticlesEdgeCases:
             "url": "http://example.com/rss",
             "source_type": "rss",
             "ideology": "center",
-            "geography": "TestLand"
+            "geography": "TestLand",
         }
         resp = await client.post("/api/articles/sources/add", params=data)
         assert resp.status_code == 200
         # Add again (should not error, but will duplicate in-memory)
         resp2 = await client.post("/api/articles/sources/add", params=data)
         assert resp2.status_code == 200
+
 
 @pytest.mark.integration
 class TestAnalyticsEdgeCases:
@@ -45,6 +46,7 @@ class TestAnalyticsEdgeCases:
         assert resp.status_code == 200
         data = resp.json()
         assert "sources" in data and isinstance(data["sources"], list)
+
 
 @pytest.mark.integration
 class TestStoriesEdgeCases:
@@ -60,6 +62,7 @@ class TestStoriesEdgeCases:
     async def test_get_story_coverage_not_found(self, client):
         resp = await client.get("/api/stories/doesnotexist/coverage")
         assert resp.status_code == 404
+
 
 @pytest.mark.integration
 class TestFactCheckerEdgeCases:

@@ -27,16 +27,19 @@ src/
 ## Test Categories
 
 ### Component Tests
+
 - **App.jsx**: Navigation, page switching, header
 - **StoryCard**: Rendering, user interactions, data display
 - **StoryDetail**: Story display, fact ledger, coverage matrix
 - **Filters**: Facet loading, filter selection, state management
 
 ### Page Tests
+
 - **StoriesPage**: Story list, actions (ingest, cluster), navigation
 - **AnalyticsPage**: Statistics display, data visualization
 
 ### Service Tests
+
 - **API Services**: All API calls, error handling, data formatting
 
 ## Running Tests
@@ -77,6 +80,7 @@ npm run test:ui
 ## Test Infrastructure
 
 ### Testing Libraries
+
 - **Vitest**: Fast test runner compatible with Vite
 - **@testing-library/react**: Component testing utilities
 - **@testing-library/jest-dom**: Custom matchers
@@ -84,6 +88,7 @@ npm run test:ui
 - **MSW**: API mocking (for integration tests)
 
 ### Configuration Files
+
 - `vite.config.js`: Vitest configuration with coverage settings
 - `src/test/setup.js`: Global test setup
 - `src/test/utils.jsx`: Shared test utilities and mock data
@@ -106,6 +111,7 @@ npm run test:ui
 ## What's Tested
 
 ### Components
+
 ✅ User interactions (clicks, form submissions)
 ✅ Conditional rendering
 ✅ Props validation
@@ -114,12 +120,14 @@ npm run test:ui
 ✅ Loading states
 
 ### Services
+
 ✅ API calls
 ✅ Request parameters
 ✅ Response handling
 ✅ Error handling
 
 ### Pages
+
 ✅ Page navigation
 ✅ Data fetching
 ✅ User workflows
@@ -128,6 +136,7 @@ npm run test:ui
 ## Mock Data
 
 Mock data is centralized in `src/test/utils.jsx`:
+
 - Sample stories
 - Sample articles
 - Sample statistics
@@ -148,42 +157,42 @@ Mock data is centralized in `src/test/utils.jsx`:
 ### Component Test Template
 
 ```javascript
-import { describe, it, expect, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import MyComponent from '../MyComponent'
+import { describe, it, expect, vi } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import MyComponent from "../MyComponent";
 
-describe('MyComponent', () => {
-  it('should render correctly', () => {
-    render(<MyComponent />)
-    expect(screen.getByText('Expected Text')).toBeInTheDocument()
-  })
+describe("MyComponent", () => {
+  it("should render correctly", () => {
+    render(<MyComponent />);
+    expect(screen.getByText("Expected Text")).toBeInTheDocument();
+  });
 
-  it('should handle user interaction', () => {
-    const mockFn = vi.fn()
-    render(<MyComponent onClick={mockFn} />)
-    fireEvent.click(screen.getByRole('button'))
-    expect(mockFn).toHaveBeenCalled()
-  })
-})
+  it("should handle user interaction", () => {
+    const mockFn = vi.fn();
+    render(<MyComponent onClick={mockFn} />);
+    fireEvent.click(screen.getByRole("button"));
+    expect(mockFn).toHaveBeenCalled();
+  });
+});
 ```
 
 ### Service Test Template
 
 ```javascript
-import { describe, it, expect, vi } from 'vitest'
-import axios from 'axios'
-import { myService } from '../services/api'
+import { describe, it, expect, vi } from "vitest";
+import axios from "axios";
+import { myService } from "../services/api";
 
-vi.mock('axios')
+vi.mock("axios");
 
-describe('myService', () => {
-  it('should call API correctly', async () => {
-    axios.get.mockResolvedValue({ data: { result: 'success' } })
-    const result = await myService.getData()
-    expect(axios.get).toHaveBeenCalledWith('/api/endpoint')
-    expect(result).toEqual({ result: 'success' })
-  })
-})
+describe("myService", () => {
+  it("should call API correctly", async () => {
+    axios.get.mockResolvedValue({ data: { result: "success" } });
+    const result = await myService.getData();
+    expect(axios.get).toHaveBeenCalledWith("/api/endpoint");
+    expect(result).toEqual({ result: "success" });
+  });
+});
 ```
 
 ## Debugging Tests
@@ -195,6 +204,7 @@ npm run test:ui
 ```
 
 This opens a browser interface showing:
+
 - Test results
 - Code coverage
 - Failed tests with details

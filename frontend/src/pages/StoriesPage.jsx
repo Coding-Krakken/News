@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { storyService, articleService } from '../services/api';
-import StoryCard from '../components/StoryCard';
-import StoryDetail from '../components/StoryDetail';
-import Filters from '../components/Filters';
+import React, { useState, useEffect } from "react";
+import { storyService, articleService } from "../services/api";
+import StoryCard from "../components/StoryCard";
+import StoryDetail from "../components/StoryDetail";
+import Filters from "../components/Filters";
 
 function StoriesPage() {
   const [stories, setStories] = useState([]);
@@ -33,7 +33,9 @@ function StoriesPage() {
       setIngesting(true);
       await articleService.ingestArticles();
       setIngesting(false);
-      alert('Articles ingested successfully! Now cluster them to create stories.');
+      alert(
+        "Articles ingested successfully! Now cluster them to create stories.",
+      );
     } catch (err) {
       setError(err.message);
       setIngesting(false);
@@ -57,34 +59,36 @@ function StoriesPage() {
 
   const handleFilterChange = (filters) => {
     // In a real app, you would filter stories based on selected filters
-    console.log('Filters changed:', filters);
+    console.log("Filters changed:", filters);
   };
 
   if (selectedStory) {
-    return <StoryDetail storyId={selectedStory} onClose={() => setSelectedStory(null)} />;
+    return (
+      <StoryDetail
+        storyId={selectedStory}
+        onClose={() => setSelectedStory(null)}
+      />
+    );
   }
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <button 
-          onClick={handleIngest} 
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <button
+          onClick={handleIngest}
           className="button button-primary"
           disabled={ingesting}
         >
-          {ingesting ? 'Ingesting...' : 'Ingest Articles'}
+          {ingesting ? "Ingesting..." : "Ingest Articles"}
         </button>
-        <button 
-          onClick={handleCluster} 
+        <button
+          onClick={handleCluster}
           className="button button-primary"
           disabled={clustering}
         >
-          {clustering ? 'Clustering...' : 'Cluster Stories'}
+          {clustering ? "Clustering..." : "Cluster Stories"}
         </button>
-        <button 
-          onClick={loadStories} 
-          className="button button-secondary"
-        >
+        <button onClick={loadStories} className="button button-secondary">
           Refresh
         </button>
       </div>
@@ -102,10 +106,10 @@ function StoriesPage() {
         </div>
       ) : (
         <div className="stories-grid">
-          {stories.map(story => (
-            <StoryCard 
-              key={story.story_id} 
-              story={story} 
+          {stories.map((story) => (
+            <StoryCard
+              key={story.story_id}
+              story={story}
               onClick={setSelectedStory}
             />
           ))}

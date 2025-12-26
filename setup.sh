@@ -16,21 +16,21 @@ echo ""
 if [ "$choice" = "1" ]; then
     echo "🐳 Setting up with Docker Compose..."
     echo ""
-    
+
     # Check if Docker is running
     if ! docker info > /dev/null 2>&1; then
         echo "❌ Error: Docker is not running"
         echo "   Please start Docker and try again"
         exit 1
     fi
-    
+
     # Check if docker-compose exists
     if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null 2>&1; then
         echo "❌ Error: docker-compose is not installed"
         echo "   Please install Docker Compose and try again"
         exit 1
     fi
-    
+
     # Create backend .env if it doesn't exist
     if [ ! -f "backend/.env" ]; then
         echo "📝 Creating backend/.env from template..."
@@ -38,13 +38,13 @@ if [ "$choice" = "1" ]; then
         echo "   ⚠️  Edit backend/.env to add your OPENAI_API_KEY (optional)"
         echo ""
     fi
-    
+
     echo "🚀 Starting all services with Docker Compose..."
     echo "   This will start MongoDB, Backend, and Frontend"
     echo ""
-    
+
     docker-compose up
-    
+
 elif [ "$choice" = "2" ]; then
     echo "📦 Manual setup selected..."
     echo ""
@@ -117,9 +117,8 @@ elif [ "$choice" = "2" ]; then
     echo "Then visit: http://localhost:3000"
     echo "API docs: http://localhost:8000/docs"
     echo "==================================="
-    
+
 else
     echo "❌ Invalid choice. Please run the script again and choose 1 or 2."
     exit 1
 fi
-

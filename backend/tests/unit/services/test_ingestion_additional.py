@@ -1,7 +1,7 @@
 """
 Unit tests for additional ingestion parsing edge cases.
 """
-import pytest
+
 from unittest.mock import Mock
 from app.services.ingestion import NewsIngestionService
 
@@ -20,10 +20,15 @@ def test_parse_rss_entry_nonstring_author_and_missing_tag():
 
     # tags present but tag.term missing
     tag = Mock()
-    delattr(tag, 'term') if hasattr(tag, 'term') else None
+    delattr(tag, "term") if hasattr(tag, "term") else None
     entry.tags = [tag]
 
-    source = {"name": "Test", "url": "https://example.com", "ideology": "center", "geography": "US"}
+    source = {
+        "name": "Test",
+        "url": "https://example.com",
+        "ideology": "center",
+        "geography": "US",
+    }
 
     article = service._parse_rss_entry(entry, source)
     assert article is not None
@@ -41,7 +46,12 @@ def test_parse_rss_entry_description_used_when_no_summary():
     entry.description = "<div>Desc content</div>"
     entry.published_parsed = (2025, 12, 15, 12, 0, 0, 0, 0, 0)
 
-    source = {"name": "Test", "url": "https://example.com", "ideology": "center", "geography": "US"}
+    source = {
+        "name": "Test",
+        "url": "https://example.com",
+        "ideology": "center",
+        "geography": "US",
+    }
 
     article = service._parse_rss_entry(entry, source)
     assert article is not None
