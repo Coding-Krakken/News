@@ -23,7 +23,13 @@ source venv/bin/activate
 
 # Install dependencies
 echo "Installing dependencies..."
-pip install -q -r requirements.txt
+# Fast test path: install a trimmed set of packages to avoid long installs
+if [ "$FAST_TEST" = "1" ]; then
+    echo "FAST_TEST=1 detected — installing test-only requirements..."
+    pip install -q -r requirements-test.txt
+else
+    pip install -q -r requirements.txt
+fi
 
 echo ""
 echo "===================================="

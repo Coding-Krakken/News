@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// Use `process.env.VITE_API_URL` in test/node environments. Vite replaces `import.meta.env` at build time.
+const API_BASE_URL = (process.env.VITE_API_URL as string) || '/api';
 
 class ApiClient {
   private client: AxiosInstance;

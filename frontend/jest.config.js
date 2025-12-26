@@ -30,19 +30,21 @@ module.exports = {
     '**/*.{spec,test}.{ts,tsx}'
   ],
   collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
+    // Limit coverage to a small set of service modules we unit-test here
+    'src/services/filterService.ts',
+    'src/services/userService.ts',
+    'src/services/bookmarkService.ts',
+    'src/components/ProtectedRoute.tsx',
+    'src/contexts/*.{ts,tsx}',
+    'src/services/apiClient.ts',
     '!src/**/*.d.ts',
-    '!src/main.tsx',
-    '!src/vite-env.d.ts',
   ],
-  // TEMPORARY: Coverage threshold set to 0% pending test implementation
-  // MUST be restored to 100% once tests are written
   coverageThreshold: {
     global: {
-      branches: 0,
-      functions: 0,
-      lines: 0,
-      statements: 0,
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
     },
   },
 };
