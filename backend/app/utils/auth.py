@@ -1,6 +1,7 @@
 """
 Authentication utilities for JWT token generation and password hashing.
 """
+
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
@@ -46,13 +47,13 @@ def get_password_hash(password: str) -> str:
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """Create JWT access token."""
     secret_key, algorithm, access_token_expire_minutes = _get_jwt_settings()
-    
+
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=access_token_expire_minutes)
-    
+
     to_encode.update({"exp": expire, "type": "access"})
     encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
     return encoded_jwt
@@ -61,7 +62,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def create_refresh_token(data: dict) -> str:
     """Create JWT refresh token."""
     secret_key, algorithm, _ = _get_jwt_settings()
-    
+
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode.update({"exp": expire, "type": "refresh"})
@@ -72,7 +73,7 @@ def create_refresh_token(data: dict) -> str:
 def decode_token(token: str) -> Optional[dict]:
     """Decode and verify JWT token."""
     secret_key, algorithm, _ = _get_jwt_settings()
-    
+
     try:
         payload = jwt.decode(token, secret_key, algorithms=[algorithm])
         return payload

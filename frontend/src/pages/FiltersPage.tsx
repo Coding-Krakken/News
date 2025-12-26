@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { filterService } from '../services/filterService';
-import { SavedFilter } from '../types';
+import React, { useState, useEffect } from "react";
+import { filterService } from "../services/filterService";
+import { SavedFilter } from "../types";
 
 export function FiltersPage() {
   const [filters, setFilters] = useState<SavedFilter[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [name, setName] = useState('');
-  const [filterQuery, setFilterQuery] = useState('');
+  const [name, setName] = useState("");
+  const [filterQuery, setFilterQuery] = useState("");
 
   useEffect(() => {
     loadFilters();
@@ -20,7 +20,9 @@ export function FiltersPage() {
       setFilters(data);
     } catch (err: unknown) {
       type ErrorResponse = { response?: { data?: { error?: string } } };
-      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to load filters';
+      const msg =
+        (err as ErrorResponse)?.response?.data?.error ||
+        "Failed to load filters";
       setError(msg);
     } finally {
       setLoading(false);
@@ -29,17 +31,19 @@ export function FiltersPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const query = JSON.parse(filterQuery);
       const newFilter = await filterService.create(name, query);
       setFilters([...filters, newFilter]);
-      setName('');
-      setFilterQuery('');
+      setName("");
+      setFilterQuery("");
       setShowForm(false);
     } catch (err: unknown) {
       type ErrorResponse = { response?: { data?: { error?: string } } };
-      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to create filter';
+      const msg =
+        (err as ErrorResponse)?.response?.data?.error ||
+        "Failed to create filter";
       alert(msg);
     }
   };
@@ -47,10 +51,12 @@ export function FiltersPage() {
   const handleDelete = async (id: number) => {
     try {
       await filterService.delete(id);
-      setFilters(filters.filter(f => f.id !== id));
+      setFilters(filters.filter((f) => f.id !== id));
     } catch (err: unknown) {
       type ErrorResponse = { response?: { data?: { error?: string } } };
-      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to delete filter';
+      const msg =
+        (err as ErrorResponse)?.response?.data?.error ||
+        "Failed to delete filter";
       alert(msg);
     }
   };
@@ -63,9 +69,9 @@ export function FiltersPage() {
     <div className="filters-page">
       <h1>Saved Filters</h1>
       {error && <div className="error">{error}</div>}
-      
+
       <button onClick={() => setShowForm(!showForm)}>
-        {showForm ? 'Cancel' : 'Add New Filter'}
+        {showForm ? "Cancel" : "Add New Filter"}
       </button>
 
       {showForm && (
@@ -98,7 +104,7 @@ export function FiltersPage() {
         <p>No saved filters yet</p>
       ) : (
         <ul>
-          {filters.map(filter => (
+          {filters.map((filter) => (
             <li key={filter.id}>
               <h3>{filter.name}</h3>
               <pre>{JSON.stringify(filter.filter_query, null, 2)}</pre>

@@ -2,6 +2,7 @@
 Integration tests for admin source edge cases to exercise uncovered branches
 in `app/routes/admin.py` (empty update payload and non-existent source operations).
 """
+
 import pytest
 from httpx import AsyncClient
 
@@ -14,12 +15,14 @@ async def _create_admin_user(client: AsyncClient, mock_db):
     from app.utils.dependencies import get_current_admin_user
 
     # Ensure user exists in DB (so other code that queries DB can find it)
-    await mock_db.users.insert_one({
-        "username": "edge_admin",
-        "email": "edge_admin@example.com",
-        "hashed_password": "fakehash",
-        "role": "admin",
-    })
+    await mock_db.users.insert_one(
+        {
+            "username": "edge_admin",
+            "email": "edge_admin@example.com",
+            "hashed_password": "fakehash",
+            "role": "admin",
+        }
+    )
 
     # Override dependency to return a User instance for admin access
     def _override_admin():
@@ -30,25 +33,26 @@ async def _create_admin_user(client: AsyncClient, mock_db):
 
 
 @pytest.mark.asyncio
-async def test_update_source_empty_payload_returns_existing(client: AsyncClient, mock_db):
+async def test_update_source_empty_payload_returns_existing(
+    client: AsyncClient, mock_db
+):
     # Bypass auth via dependency override; no token required
     await _create_admin_user(client, mock_db)
 
     # Insert source
-    await mock_db.sources.insert_one({
-        "name": "ExistingSource",
-        "url": "https://existing.com/rss",
-        "source_type": "rss",
-        "ideology": "center",
-        "geography": "US",
-        "enabled": True
-    })
+    await mock_db.sources.insert_one(
+        {
+            "name": "ExistingSource",
+            "url": "https://existing.com/rss",
+            "source_type": "rss",
+            "ideology": "center",
+            "geography": "US",
+            "enabled": True,
+        }
+    )
 
     # Send empty update (no fields) -> should return existing source without modification
-    response = await client.put(
-        "/api/admin/sources/ExistingSource",
-        json={}
-    )
+    response = await client.put("/api/admin/sources/ExistingSource", json={})
 
     assert response.status_code == 200
     data = response.json()
@@ -90,7 +94,6 @@ async def test_update_nonexistent_source_returns_404(client: AsyncClient, mock_d
 
     # Attempt to update a non-existent source -> should return 404
     resp = await client.put(
-        "/api/admin/sources/NoSuchSourceUpdate",
-        json={"ideology": "left"}
+        "/api/admin/sources/NoSuchSourceUpdate", json={"ideology": "left"}
     )
     assert resp.status_code == 404

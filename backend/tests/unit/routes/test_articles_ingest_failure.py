@@ -17,6 +17,7 @@ class BadDB:
         class C:
             async def to_list(self, length=None):
                 return []
+
         return C()
 
 
@@ -30,6 +31,7 @@ async def test_ingest_articles_handles_insert_exceptions(monkeypatch):
     fake_article.model_dump = lambda: {"url": fake_article.url}
 
     monkeypatch.setattr(articles, "ingestion_service", articles.ingestion_service)
+
     async def fake_ingest():
         return [fake_article]
 

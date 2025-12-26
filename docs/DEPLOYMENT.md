@@ -72,6 +72,7 @@ LOG_LEVEL=info
 ```
 
 Generate secrets:
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
@@ -219,6 +220,7 @@ server {
 ```
 
 Enable sites:
+
 ```bash
 ln -s /etc/nginx/sites-available/news-api /etc/nginx/sites-enabled/
 ln -s /etc/nginx/sites-available/news-frontend /etc/nginx/sites-enabled/
@@ -259,6 +261,7 @@ find $BACKUP_DIR -name "news_db_*.sql.gz" -mtime +30 -delete
 ```
 
 Add to crontab:
+
 ```bash
 # Daily backup at 2 AM
 0 2 * * * /usr/local/bin/backup-news-db.sh
@@ -309,6 +312,7 @@ Set up monitoring for:
 - CPU usage
 
 Use tools like:
+
 - Uptime Robot
 - Pingdom
 - New Relic
@@ -370,10 +374,10 @@ Before going live:
 
 ```sql
 -- Add indexes for common queries
-CREATE INDEX CONCURRENTLY idx_bookmarks_user_created 
+CREATE INDEX CONCURRENTLY idx_bookmarks_user_created
 ON bookmarks(user_id, created_at DESC);
 
-CREATE INDEX CONCURRENTLY idx_saved_filters_user_created 
+CREATE INDEX CONCURRENTLY idx_saved_filters_user_created
 ON saved_filters(user_id, created_at DESC);
 
 -- Analyze tables
@@ -416,7 +420,7 @@ CMD ["node", "dist/index.js"]
 #### docker-compose.yml (Production)
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -503,6 +507,7 @@ location @maintenance {
 ```
 
 Enable/disable:
+
 ```bash
 # Enable
 touch /var/www/maintenance.html

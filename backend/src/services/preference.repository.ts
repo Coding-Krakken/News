@@ -1,11 +1,14 @@
-import { query } from '../config/database';
-import { UserPreference, UpdatePreferencesDto } from '../models/preference.model';
+import { query } from "../config/database";
+import {
+  UserPreference,
+  UpdatePreferencesDto,
+} from "../models/preference.model";
 
 export class PreferenceRepository {
   async findByUserId(userId: number): Promise<UserPreference | null> {
     const result = await query(
-      'SELECT * FROM user_preferences WHERE user_id = $1',
-      [userId]
+      "SELECT * FROM user_preferences WHERE user_id = $1",
+      [userId],
     );
     return result.rows[0] || null;
   }
@@ -15,12 +18,15 @@ export class PreferenceRepository {
       `INSERT INTO user_preferences (user_id)
        VALUES ($1)
        RETURNING *`,
-      [userId]
+      [userId],
     );
     return result.rows[0];
   }
 
-  async update(userId: number, preferences: UpdatePreferencesDto): Promise<UserPreference | null> {
+  async update(
+    userId: number,
+    preferences: UpdatePreferencesDto,
+  ): Promise<UserPreference | null> {
     const fields: string[] = [];
     const values: any[] = [];
     let paramCount = 1;
@@ -50,16 +56,19 @@ export class PreferenceRepository {
     values.push(userId);
 
     const result = await query(
-      `UPDATE user_preferences SET ${fields.join(', ')} WHERE user_id = $${paramCount} RETURNING *`,
-      values
+      `UPDATE user_preferences SET ${fields.join(", ")} WHERE user_id = $${paramCount} RETURNING *`,
+      values,
     );
 
     return result.rows[0] || null;
   }
 
-  async upsert(userId: number, preferences: UpdatePreferencesDto): Promise<UserPreference> {
+  async upsert(
+    userId: number,
+    preferences: UpdatePreferencesDto,
+  ): Promise<UserPreference> {
     const existing = await this.findByUserId(userId);
-    
+
     if (existing) {
       return (await this.update(userId, preferences))!;
     } else {

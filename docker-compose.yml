@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # Postgres services for the Node.js backend (auth, bookmarks, filters)
@@ -100,4 +100,3 @@ networks:
 volumes:
   postgres_data:
   mongodb_data:
-

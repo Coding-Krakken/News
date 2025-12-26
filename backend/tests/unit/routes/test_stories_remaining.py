@@ -1,9 +1,8 @@
-import asyncio
 import pytest
 from datetime import datetime
 
 from app.routes import stories
-from app.models.schemas import Story, Article
+from app.models.schemas import Story
 
 
 class FakeCursor:
@@ -35,7 +34,9 @@ class FakeDB:
 
     def find(self, *args, **kwargs):
         # used for both articles.find and stories.find
-        return FakeCursor(self._articles if kwargs.get('collection') != 'stories' else [])
+        return FakeCursor(
+            self._articles if kwargs.get("collection") != "stories" else []
+        )
 
     async def find_one(self, query, projection=None):
         return self._story
@@ -54,7 +55,7 @@ def make_article_dict(url="http://example.com/a", title="T", content="C"):
         "content": content,
         "source_name": "S",
         "source_url": "http://s",
-        "published_date": datetime.utcnow()
+        "published_date": datetime.utcnow(),
     }
 
 
@@ -84,7 +85,9 @@ async def test_cluster_articles_background_success(monkeypatch):
     )
 
     monkeypatch.setattr(stories, "clustering_service", stories.clustering_service)
-    monkeypatch.setattr(stories.clustering_service, "cluster_articles", lambda x: [story])
+    monkeypatch.setattr(
+        stories.clustering_service, "cluster_articles", lambda x: [story]
+    )
 
     # Should not raise
     await stories.cluster_articles_background()
@@ -99,6 +102,7 @@ async def test_cluster_articles_background_handles_exception(monkeypatch, capsys
         return fake_db
 
     monkeypatch.setattr(stories, "get_database", fake_get_db)
+
     def raise_exc(_):
         raise RuntimeError("boom")
 
@@ -113,10 +117,7 @@ async def test_cluster_articles_background_handles_exception(monkeypatch, capsys
 @pytest.mark.asyncio
 async def test_get_story_coverage_division_by_zero(monkeypatch):
     # Story exists but there are no sources in articles -> coverage_percentage should be 0
-    story_obj = {
-        "story_id": "s1",
-        "sources_covered": []
-    }
+    story_obj = {"story_id": "s1", "sources_covered": []}
 
     class DB:
         class Stories:

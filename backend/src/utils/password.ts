@@ -1,4 +1,4 @@
-import argon2 from 'argon2';
+import argon2 from "argon2";
 
 /**
  * Hash a password using Argon2id
@@ -15,7 +15,10 @@ export async function hashPassword(password: string): Promise<string> {
 /**
  * Verify a password against a hash using Argon2id
  */
-export async function verifyPassword(hash: string, password: string): Promise<boolean> {
+export async function verifyPassword(
+  hash: string,
+  password: string,
+): Promise<boolean> {
   try {
     return await argon2.verify(hash, password);
   } catch (error) {

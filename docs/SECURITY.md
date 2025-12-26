@@ -14,6 +14,7 @@ The News application implements a JWT-based authentication system with refresh t
 ### Token Strategy
 
 #### Access Tokens
+
 - **Lifetime**: 15 minutes
 - **Storage**: Can be stored in localStorage or httpOnly cookies
 - **Purpose**: Authenticate API requests
@@ -21,6 +22,7 @@ The News application implements a JWT-based authentication system with refresh t
 - **Payload**: userId, email, iat, exp
 
 #### Refresh Tokens
+
 - **Lifetime**: 7 days
 - **Storage**: httpOnly cookies with secure and SameSite flags
 - **Purpose**: Obtain new access tokens without re-authentication
@@ -59,11 +61,13 @@ We use Argon2id, the winner of the Password Hashing Competition and recommended 
 ### Rate Limiting
 
 #### General API Endpoints
+
 - **Window**: 15 minutes
 - **Max requests**: 100 requests per window
 - **Applies to**: All API endpoints except auth endpoints
 
 #### Authentication Endpoints
+
 - **Window**: 15 minutes
 - **Max requests**: 5 requests per window
 - **Applies to**: /auth/signup, /auth/login
@@ -72,12 +76,14 @@ We use Argon2id, the winner of the Password Hashing Competition and recommended 
 ### CORS Configuration
 
 #### Development
+
 - **Origin**: http://localhost:3001
 - **Credentials**: Enabled
 - **Methods**: GET, POST, PUT, PATCH, DELETE, OPTIONS
 - **Headers**: Content-Type, Authorization
 
 #### Production
+
 - **Origin**: Specific production domain (configured via environment variable)
 - **No wildcards**: Explicit origin allowlist only
 
@@ -86,6 +92,7 @@ We use Argon2id, the winner of the Password Hashing Competition and recommended 
 The application uses Helmet.js to set secure HTTP headers:
 
 #### Content Security Policy (CSP)
+
 ```
 default-src 'self'
 style-src 'self' 'unsafe-inline'
@@ -94,6 +101,7 @@ img-src 'self' data: https:
 ```
 
 #### Strict Transport Security (HSTS)
+
 ```
 max-age: 31536000 (1 year)
 includeSubDomains: true
@@ -101,6 +109,7 @@ preload: true
 ```
 
 #### Other Headers
+
 - X-Content-Type-Options: nosniff
 - X-Frame-Options: DENY
 - X-XSS-Protection: 1; mode=block
@@ -141,6 +150,7 @@ We use express-validator for comprehensive input validation:
 #### Rejected Fields
 
 Unknown fields in request bodies are rejected to prevent:
+
 - Parameter pollution
 - Mass assignment vulnerabilities
 - Injection attacks
@@ -167,6 +177,7 @@ The logger automatically redacts sensitive fields:
 #### What We Log
 
 ✅ **Do log**:
+
 - Request method and path
 - Response status codes
 - Error messages (sanitized)
@@ -174,6 +185,7 @@ The logger automatically redacts sensitive fields:
 - User actions (without PII)
 
 ❌ **Don't log**:
+
 - Passwords (plain or hashed)
 - Tokens (access or refresh)
 - Full email addresses in production
@@ -183,35 +195,42 @@ The logger automatically redacts sensitive fields:
 ### Attack Prevention
 
 #### SQL Injection
+
 - **Protection**: Parameterized queries via pg library
 - **Never**: String concatenation for SQL
 
 #### Cross-Site Scripting (XSS)
+
 - **Protection**: React auto-escapes output
 - **Additional**: CSP headers
 - **Validation**: Input sanitization
 
 #### Cross-Site Request Forgery (CSRF)
+
 - **Protection**: SameSite cookies
 - **Additional**: Consider CSRF tokens for state-changing operations
 - **Note**: SameSite=Strict provides strong protection
 
 #### User Enumeration
+
 - **Protection**: Consistent error messages
 - **Login/Signup**: Same error for non-existent users and wrong passwords
 - **Timing**: Constant-time password verification
 
 #### Brute Force
+
 - **Protection**: Rate limiting on auth endpoints
 - **Lockout**: Consider account lockout after N failed attempts
 - **Monitoring**: Log failed authentication attempts
 
 #### Token Theft/Replay
+
 - **Protection**: Short-lived access tokens
 - **Additional**: Refresh token rotation
 - **Server-side**: Token invalidation on logout
 
 #### Horizontal Privilege Escalation
+
 - **Protection**: Always check user_id in queries
 - **Example**: `WHERE user_id = $1 AND id = $2`
 - **Never**: Trust client-provided user IDs
@@ -219,16 +238,19 @@ The logger automatically redacts sensitive fields:
 ### Database Security
 
 #### Connection Security
+
 - **SSL/TLS**: Required in production
 - **Credentials**: Environment variables only
 - **Principle of least privilege**: App user has minimal permissions
 
 #### Data Protection
+
 - **Encryption at rest**: Database-level encryption
 - **Encryption in transit**: SSL/TLS connections
 - **Backups**: Encrypted and access-controlled
 
 #### Schema Security
+
 - **Foreign keys**: Enforce referential integrity
 - **Constraints**: Enforce data rules at DB level
 - **Indexes**: Sensitive to timing attacks (be careful)
@@ -276,6 +298,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ### Compliance Considerations
 
 #### GDPR
+
 - User data collection minimization
 - Right to access (export user data)
 - Right to deletion (delete user account)
@@ -283,6 +306,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 - Privacy policy disclosure
 
 #### Data Retention
+
 - Refresh tokens: Auto-delete expired tokens
 - User accounts: Soft delete with retention period
 - Logs: Rotate and archive with retention policy
@@ -311,21 +335,25 @@ If tokens are compromised:
 ### Regular Security Maintenance
 
 #### Weekly
+
 - Review error logs for anomalies
 - Check failed authentication attempts
 
 #### Monthly
+
 - Update dependencies (security patches)
 - Review access logs for suspicious patterns
 - Test backup restoration
 
 #### Quarterly
+
 - Security audit of new features
 - Penetration testing
 - Review and update security policies
 - Dependency vulnerability scan
 
 #### Annually
+
 - Comprehensive security audit
 - Third-party security assessment
 - Disaster recovery drill

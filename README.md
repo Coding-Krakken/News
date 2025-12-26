@@ -5,6 +5,7 @@ A comprehensive news analytics platform that ingests articles from multiple sour
 ## Features
 
 ### Core Analytics
+
 - **Multi-source ingestion**: Ingest from RSS, APIs, and web scraping
 - **Story clustering**: Automatically group related articles
 - **Coverage analysis**: See which outlets cover which stories
@@ -12,6 +13,7 @@ A comprehensive news analytics platform that ingests articles from multiple sour
 - **Analytics dashboard**: Comprehensive statistics and filtering
 
 ### Authentication & Personalization
+
 - ✅ **Secure Authentication**: JWT-based auth with refresh token rotation
 - ✅ **User Profiles**: View and edit profiles with avatar support
 - ✅ **Bookmarks**: Save articles and stories for later reading
@@ -22,6 +24,7 @@ A comprehensive news analytics platform that ingests articles from multiple sour
 ## Tech Stack
 
 ### Backend
+
 - **Analytics**: Python with FastAPI, Motor (async MongoDB)
 - **Auth API**: Node.js with Express, TypeScript, PostgreSQL
 - **NLP**: Sentence Transformers, scikit-learn (DBSCAN clustering)
@@ -29,12 +32,14 @@ A comprehensive news analytics platform that ingests articles from multiple sour
 - **Testing**: pytest, Jest with 100% coverage requirement
 
 ### Frontend
+
 - React 18 with TypeScript
 - Vite for development and building
 - React Router for navigation
 - Axios for API communication
 
 ### Testing
+
 - Jest for unit/integration tests
 - Playwright for E2E tests
 - 100% code coverage enforced in CI
@@ -50,11 +55,14 @@ A comprehensive news analytics platform that ingests articles from multiple sour
 ## Quick Start
 
 ### Local Development (Docker Compose)
+
 \`\`\`bash
 git clone https://github.com/Coding-Krakken/News.git
 cd News
 cp backend/.env.example backend/.env
+
 # Edit backend/.env if needed
+
 docker compose up
 \`\`\`
 
@@ -66,6 +74,7 @@ docker compose up
 ### Production Deployment
 
 See \`DEPLOYMENT.md\` for detailed production deployment instructions including:
+
 - Railway backend deployment
 - Vercel frontend deployment
 - Environment configuration
@@ -76,6 +85,7 @@ See \`DEPLOYMENT.md\` for detailed production deployment instructions including:
 The project includes automated GitHub Actions workflows that enforce quality standards:
 
 **CI Pipeline (\`.github/workflows/ci.yml\`):**
+
 - ✅ Backend tests with PostgreSQL service container
 - ✅ Frontend tests with 100% coverage enforcement
 - ✅ E2E tests with Playwright
@@ -86,10 +96,11 @@ The project includes automated GitHub Actions workflows that enforce quality sta
 - ✅ Node.js 18 pinned via .nvmrc and package.json engines
 
 **Quality Gates (All Must Pass):**
+
 - ✅ Linting (ESLint)
 - ✅ Type checking (TypeScript)
 - ✅ Unit tests
-- ✅ Integration tests  
+- ✅ Integration tests
 - ✅ E2E tests (Playwright)
 - ✅ 100% code coverage on auth backend (lines/branches/functions/statements)
 - ✅ 95%+ coverage on analytics backend
@@ -97,26 +108,34 @@ The project includes automated GitHub Actions workflows that enforce quality sta
 
 **Running CI Checks Locally:**
 \`\`\`bash
+
 # Backend lint
+
 cd backend && npm run lint
 
 # Backend typecheck
+
 cd backend && npm run build
 
 # Backend tests
+
 cd backend && npm test
 
 # Frontend lint
+
 cd frontend && npm run lint
 
 # Frontend tests
+
 cd frontend && npm test
 
 # E2E tests
+
 cd frontend && npm run test:e2e
 \`\`\`
 
 **Accessing Test Artifacts:**
+
 - Playwright reports are uploaded to GitHub Actions artifacts
 - Coverage reports available in CI logs
 - Retention: 30 days for Playwright reports
@@ -153,6 +172,7 @@ cd backend
 \`\`\`
 
 **Test Statistics:**
+
 - 112+ test functions across 11 test files
 - Unit, Integration, and E2E tests
 - Mock database for testing
@@ -166,6 +186,7 @@ npm test
 \`\`\`
 
 **Test Statistics:**
+
 - 70+ test functions across 7 test files
 - Component, Page, and Service tests
 - React Testing Library
@@ -183,6 +204,7 @@ npm run test:e2e
 ### Auth API
 
 **Authentication:**
+
 - \`POST /api/auth/signup\` - User registration
 - \`POST /api/auth/login\` - User login
 - \`POST /api/auth/logout\` - Revoke tokens
@@ -190,50 +212,59 @@ npm run test:e2e
 - \`POST /api/auth/refresh\` - Rotate tokens
 
 **User Management:**
+
 - \`PATCH /api/users/me\` - Update profile
 - \`GET /api/users/me/preferences\` - Get preferences
 - \`PUT /api/users/me/preferences\` - Update preferences
 
 **Bookmarks:**
+
 - \`POST /api/bookmarks\` - Save article/story
 - \`GET /api/bookmarks\` - List bookmarks
 - \`DELETE /api/bookmarks/:id\` - Remove bookmark
 
 **Saved Filters:**
+
 - \`POST /api/saved-filters\` - Create filter
 - \`GET /api/saved-filters\` - List filters
 - \`PUT /api/saved-filters/:id\` - Update filter
 - \`DELETE /api/saved-filters/:id\` - Delete filter
 
 **Feeds:**
+
 - \`GET /api/feeds/custom\` - Get personalized feed
 
 ### Analytics API
 
 **Articles:**
+
 - \`POST /api/articles/ingest\` - Ingest articles
 - \`GET /api/articles/\` - Get articles with filtering
 - \`GET /api/articles/sources/list\` - List sources
 - \`POST /api/articles/sources/add\` - Add source
 
 **Stories:**
+
 - \`POST /api/stories/cluster\` - Trigger clustering
 - \`GET /api/stories/\` - Get stories
 - \`GET /api/stories/{story_id}\` - Get story details
 - \`GET /api/stories/{story_id}/coverage\` - Coverage matrix
 
 **Analytics:**
+
 - \`GET /api/analytics/stats\` - Get statistics
 - \`GET /api/analytics/filter\` - Filter articles
 - \`GET /api/analytics/facets\` - Get filter options
 
 **Fact Checker:**
+
 - \`POST /api/fact-checker/{story_id}\` - Generate fact ledger
 - \`GET /api/fact-checker/{story_id}\` - Get fact ledger
 
 ## Environment Variables
 
 ### Backend Auth (.env)
+
 \`\`\`env
 NODE_ENV=development
 PORT=3000
@@ -248,13 +279,15 @@ CORS_ORIGIN=http://localhost:3001
 \`\`\`
 
 ### Backend Analytics (.env)
+
 \`\`\`env
 MONGODB_URL=mongodb://localhost:27017
 DATABASE_NAME=news_analytics
-OPENAI_API_KEY=sk-...  # Optional
+OPENAI_API_KEY=sk-... # Optional
 \`\`\`
 
 ### Frontend (.env)
+
 \`\`\`env
 VITE_API_URL=http://localhost:3000/api
 VITE_ANALYTICS_API_URL=http://localhost:8000/api

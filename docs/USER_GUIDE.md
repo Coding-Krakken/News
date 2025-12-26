@@ -84,6 +84,7 @@ Saved filters help you quickly access news that matches specific criteria. You c
 ### Filter Query Examples
 
 **Technology news in English:**
+
 ```json
 {
   "category": "tech",
@@ -92,6 +93,7 @@ Saved filters help you quickly access news that matches specific criteria. You c
 ```
 
 **Business news from specific sources:**
+
 ```json
 {
   "category": "business",
@@ -100,6 +102,7 @@ Saved filters help you quickly access news that matches specific criteria. You c
 ```
 
 **Sports news excluding certain topics:**
+
 ```json
 {
   "category": "sports",
@@ -151,21 +154,25 @@ Set default filters that apply automatically when browsing news:
 ## Tips for Best Experience
 
 ### Password Security
+
 - Use a unique password for this account
 - Don't share your password with anyone
 - Log out on shared devices
 
 ### Organizing Bookmarks
+
 - Bookmark articles you want to read later
 - Regularly review and remove old bookmarks
 - Use descriptive saved filters for easy access
 
 ### Using Filters Effectively
+
 - Create filters for your main interests
 - Combine multiple criteria for precise results
 - Update filters as your interests change
 
 ### Privacy
+
 - Your bookmarks and filters are private
 - Only you can see your saved items
 - Your email is never displayed to other users
@@ -177,6 +184,7 @@ Set default filters that apply automatically when browsing news:
 **Problem**: Error message when trying to log in
 
 **Solutions**:
+
 - Check that your email and password are correct
 - Ensure Caps Lock is off
 - Try resetting your browser cache
@@ -187,6 +195,7 @@ Set default filters that apply automatically when browsing news:
 **Problem**: Profile or preference updates don't persist
 
 **Solutions**:
+
 - Check your internet connection
 - Try refreshing the page
 - Log out and log back in
@@ -197,6 +206,7 @@ Set default filters that apply automatically when browsing news:
 **Problem**: Can't find a bookmark you saved
 
 **Solutions**:
+
 - Check if you're logged into the correct account
 - Verify you didn't accidentally delete it
 - Try refreshing the page

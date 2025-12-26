@@ -20,7 +20,7 @@ export interface UserPreference {
 export interface Bookmark {
   id: number;
   user_id: number;
-  target_type: 'article' | 'story';
+  target_type: "article" | "story";
   target_id: string;
   created_at: string;
 }

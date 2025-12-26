@@ -9,12 +9,14 @@ The News Analytics Platform now has comprehensive test coverage for both backend
 ## Backend Tests (95%+ Coverage)
 
 ### Test Statistics
+
 - **Total Files**: 11
 - **Total Tests**: 112+
 - **Coverage Target**: 95%+ (enforced)
 - **Framework**: pytest with async support
 
 ### Test Breakdown
+
 - **Unit Tests** (70%): 103 tests across 5 files
   - Models (32 tests)
   - Services (71 tests): ingestion, clustering, fact-checking, analytics
@@ -26,6 +28,7 @@ The News Analytics Platform now has comprehensive test coverage for both backend
   - Health checks, CORS, error handling
 
 ### Coverage by Module
+
 ```
 app/models/         100%
 app/services/       95%+
@@ -35,6 +38,7 @@ app/database.py     90%+
 ```
 
 ### Running Backend Tests
+
 ```bash
 cd backend
 ./run_tests.sh
@@ -43,12 +47,14 @@ cd backend
 ## Frontend Tests (80%+ Coverage)
 
 ### Test Statistics
+
 - **Total Files**: 7
 - **Total Tests**: 70+
 - **Coverage Target**: 80%+ (enforced)
 - **Framework**: Vitest with React Testing Library
 
 ### Test Breakdown
+
 - **Component Tests** (57%): 34 tests
   - Filters (12 tests)
   - StoryCard (9 tests)
@@ -62,6 +68,7 @@ cd backend
   - Navigation and routing
 
 ### Coverage by Module
+
 ```
 src/components/     80%+
 src/pages/          80%+
@@ -70,6 +77,7 @@ src/App.jsx         80%+
 ```
 
 ### Running Frontend Tests
+
 ```bash
 cd frontend
 ./run_tests.sh
@@ -78,11 +86,13 @@ cd frontend
 ## Combined Statistics
 
 ### Total Test Coverage
+
 - **Total Test Files**: 18 (11 backend + 7 frontend)
 - **Total Test Functions**: 182+ (112 backend + 70 frontend)
 - **Overall Coverage**: 87%+ (weighted average)
 
 ### Test Types Distribution
+
 ```
 Unit Tests:          65% (137 tests)
 Integration Tests:   25% (29 tests)
@@ -93,6 +103,7 @@ Application Tests:   5%  (6 tests)
 ### Technologies Used
 
 **Backend Testing:**
+
 - pytest 7.4.3 - Test framework
 - pytest-asyncio 0.21.1 - Async support
 - pytest-cov 4.1.0 - Coverage
@@ -102,6 +113,7 @@ Application Tests:   5%  (6 tests)
 - freezegun 1.4.0 - Time mocking
 
 **Frontend Testing:**
+
 - vitest 1.0.4 - Test framework
 - @testing-library/react 14.1.2 - Component testing
 - @testing-library/jest-dom 6.1.5 - Matchers
@@ -114,16 +126,19 @@ Application Tests:   5%  (6 tests)
 ## Test Infrastructure
 
 ### Configuration Files
+
 - `backend/pytest.ini` - Backend test config
 - `backend/conftest.py` - Shared backend fixtures
 - `frontend/vite.config.js` - Frontend test config
 - `frontend/src/test/setup.js` - Frontend test setup
 
 ### Test Runners
+
 - `backend/run_tests.sh` - Automated backend tests
 - `frontend/run_tests.sh` - Automated frontend tests
 
 ### Documentation
+
 - `backend/tests/README.md` - Backend test docs
 - `backend/TEST_SUMMARY.md` - Backend coverage summary
 - `frontend/TEST_README.md` - Frontend test docs
@@ -132,6 +147,7 @@ Application Tests:   5%  (6 tests)
 ## What's Tested
 
 ### Backend
+
 ✅ News ingestion from RSS feeds
 ✅ Article parsing and validation
 ✅ Story clustering with NLP
@@ -143,6 +159,7 @@ Application Tests:   5%  (6 tests)
 ✅ Async operations
 
 ### Frontend
+
 ✅ Component rendering
 ✅ User interactions
 ✅ API service calls
@@ -155,6 +172,7 @@ Application Tests:   5%  (6 tests)
 ## Running All Tests
 
 ### Sequential
+
 ```bash
 # Backend first
 cd backend && ./run_tests.sh
@@ -164,6 +182,7 @@ cd ../frontend && ./run_tests.sh
 ```
 
 ### Parallel (in separate terminals)
+
 ```bash
 # Terminal 1
 cd backend && ./run_tests.sh
@@ -175,6 +194,7 @@ cd frontend && ./run_tests.sh
 ## CI/CD Integration
 
 ### GitHub Actions Example
+
 ```yaml
 name: Tests
 
@@ -188,7 +208,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - name: Run Backend Tests
         run: |
           cd backend
@@ -204,7 +224,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
+          node-version: "20"
       - name: Run Frontend Tests
         run: |
           cd frontend
@@ -215,6 +235,7 @@ jobs:
 ## Coverage Reports
 
 ### Backend
+
 ```bash
 cd backend
 pytest --cov=app --cov-report=html
@@ -222,6 +243,7 @@ open htmlcov/index.html
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
 npm run test:coverage
@@ -231,6 +253,7 @@ open coverage/index.html
 ## Quality Metrics
 
 ### Code Quality
+
 - ✅ 95%+ backend coverage enforced
 - ✅ 80%+ frontend coverage enforced
 - ✅ Comprehensive error handling tests
@@ -239,6 +262,7 @@ open coverage/index.html
 - ✅ Mock data consistency
 
 ### Test Quality
+
 - ✅ Descriptive test names
 - ✅ Isolated test cases
 - ✅ Proper setup/teardown
@@ -249,6 +273,7 @@ open coverage/index.html
 ## Future Enhancements
 
 ### Potential Additions
+
 - Visual regression tests
 - Performance tests
 - Load tests

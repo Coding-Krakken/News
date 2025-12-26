@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export function SignupPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [displayName, setDisplayName] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [displayName, setDisplayName] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
@@ -22,10 +22,11 @@ export function SignupPage() {
         password,
         display_name: displayName || undefined,
       });
-      navigate('/');
+      navigate("/");
     } catch (err: unknown) {
       type ErrorResponse = { response?: { data?: { error?: string } } };
-      const msg = (err as ErrorResponse)?.response?.data?.error || 'Signup failed';
+      const msg =
+        (err as ErrorResponse)?.response?.data?.error || "Signup failed";
       setError(msg);
     } finally {
       setLoading(false);
@@ -58,7 +59,9 @@ export function SignupPage() {
             minLength={8}
             disabled={loading}
           />
-          <small>At least 8 characters with uppercase, lowercase, and number</small>
+          <small>
+            At least 8 characters with uppercase, lowercase, and number
+          </small>
         </div>
         <div>
           <label htmlFor="displayName">Display Name (optional):</label>
@@ -72,7 +75,7 @@ export function SignupPage() {
         </div>
         {error && <div className="error">{error}</div>}
         <button type="submit" disabled={loading}>
-          {loading ? 'Signing up...' : 'Sign Up'}
+          {loading ? "Signing up..." : "Sign Up"}
         </button>
       </form>
       <p>

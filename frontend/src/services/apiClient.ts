@@ -1,7 +1,7 @@
-import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from "axios";
 
 // Use `process.env.VITE_API_URL` in test/node environments. Vite replaces `import.meta.env` at build time.
-const API_BASE_URL = (process.env.VITE_API_URL as string) || '/api';
+const API_BASE_URL = (process.env.VITE_API_URL as string) || "/api";
 
 class ApiClient {
   private client: AxiosInstance;
@@ -12,7 +12,7 @@ class ApiClient {
       baseURL: API_BASE_URL,
       withCredentials: true,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -29,14 +29,16 @@ class ApiClient {
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // Response interceptor
     this.client.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        const originalRequest = error.config as (AxiosRequestConfig & { _retry?: boolean }) | undefined;
+        const originalRequest = error.config as
+          | (AxiosRequestConfig & { _retry?: boolean })
+          | undefined;
 
         if (!originalRequest) {
           return Promise.reject(error);
@@ -50,18 +52,20 @@ class ApiClient {
             if (newToken) {
               this.setAccessToken(newToken);
               originalRequest.headers = originalRequest.headers ?? {};
-              (originalRequest.headers as Record<string, string>).Authorization = `Bearer ${newToken}`;
+              (
+                originalRequest.headers as Record<string, string>
+              ).Authorization = `Bearer ${newToken}`;
               return this.client(originalRequest as AxiosRequestConfig);
             }
           } catch (refreshError) {
             this.clearTokens();
-            window.location.href = '/login';
+            window.location.href = "/login";
             return Promise.reject(refreshError);
           }
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -84,7 +88,7 @@ class ApiClient {
         const { accessToken, refreshToken: newRefreshToken } = response.data;
         this.setAccessToken(accessToken);
         this.setRefreshToken(newRefreshToken);
-        
+
         return accessToken;
       } finally {
         this.refreshTokenPromise = null;
@@ -95,24 +99,24 @@ class ApiClient {
   }
 
   private getAccessToken(): string | null {
-    return localStorage.getItem('accessToken');
+    return localStorage.getItem("accessToken");
   }
 
   private getRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
+    return localStorage.getItem("refreshToken");
   }
 
   setAccessToken(token: string) {
-    localStorage.setItem('accessToken', token);
+    localStorage.setItem("accessToken", token);
   }
 
   setRefreshToken(token: string) {
-    localStorage.setItem('refreshToken', token);
+    localStorage.setItem("refreshToken", token);
   }
 
   clearTokens() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   }
 
   get<T>(url: string, config?: AxiosRequestConfig) {

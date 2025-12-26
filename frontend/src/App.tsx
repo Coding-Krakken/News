@@ -1,14 +1,14 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { HomePage } from './pages/HomePage';
-import { LoginPage } from './pages/LoginPage';
-import { SignupPage } from './pages/SignupPage';
-import { ProfilePage } from './pages/ProfilePage';
-import { BookmarksPage } from './pages/BookmarksPage';
-import { FiltersPage } from './pages/FiltersPage';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { HomePage } from "./pages/HomePage";
+import { LoginPage } from "./pages/LoginPage";
+import { SignupPage } from "./pages/SignupPage";
+import { ProfilePage } from "./pages/ProfilePage";
+import { BookmarksPage } from "./pages/BookmarksPage";
+import { FiltersPage } from "./pages/FiltersPage";
+import "./App.css";
 
 function Navigation() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -17,7 +17,7 @@ function Navigation() {
     try {
       await logout();
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -29,9 +29,15 @@ function Navigation() {
       <ul className="nav-links">
         {isAuthenticated ? (
           <>
-            <li><Link to="/profile">Profile</Link></li>
-            <li><Link to="/bookmarks">Bookmarks</Link></li>
-            <li><Link to="/filters">Filters</Link></li>
+            <li>
+              <Link to="/profile">Profile</Link>
+            </li>
+            <li>
+              <Link to="/bookmarks">Bookmarks</Link>
+            </li>
+            <li>
+              <Link to="/filters">Filters</Link>
+            </li>
             <li>
               <span>Welcome, {user?.display_name || user?.email}</span>
             </li>
@@ -41,8 +47,12 @@ function Navigation() {
           </>
         ) : (
           <>
-            <li><Link to="/login">Login</Link></li>
-            <li><Link to="/signup">Sign Up</Link></li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/signup">Sign Up</Link>
+            </li>
           </>
         )}
       </ul>

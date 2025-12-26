@@ -1,15 +1,15 @@
-import axios from 'axios';
+import axios from "axios";
 
 // Get API base URL from environment variable
 // For local development, this will be '/api' (proxied to backend by Vite)
 // For production, this will be the full backend API URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
 
 // Log configuration in development
 if (import.meta.env.DEV) {
-  console.log('API Configuration:', {
+  console.log("API Configuration:", {
     baseURL: API_BASE_URL,
-    environment: import.meta.env.VITE_ENVIRONMENT || 'local'
+    environment: import.meta.env.VITE_ENVIRONMENT || "local",
   });
 }
 
@@ -27,7 +27,7 @@ export const articleService = {
   getSources: async () => {
     const response = await axios.get(`${API_BASE_URL}/articles/sources/list`);
     return response.data;
-  }
+  },
 };
 
 export const storyService = {
@@ -47,14 +47,18 @@ export const storyService = {
   },
 
   getStoryArticles: async (storyId) => {
-    const response = await axios.get(`${API_BASE_URL}/stories/${storyId}/articles`);
+    const response = await axios.get(
+      `${API_BASE_URL}/stories/${storyId}/articles`,
+    );
     return response.data;
   },
 
   getStoryCoverage: async (storyId) => {
-    const response = await axios.get(`${API_BASE_URL}/stories/${storyId}/coverage`);
+    const response = await axios.get(
+      `${API_BASE_URL}/stories/${storyId}/coverage`,
+    );
     return response.data;
-  }
+  },
 };
 
 export const analyticsService = {
@@ -64,24 +68,28 @@ export const analyticsService = {
   },
 
   filterArticles: async (filters) => {
-    const response = await axios.get(`${API_BASE_URL}/analytics/filter`, { params: filters });
+    const response = await axios.get(`${API_BASE_URL}/analytics/filter`, {
+      params: filters,
+    });
     return response.data;
   },
 
   getFacets: async () => {
     const response = await axios.get(`${API_BASE_URL}/analytics/facets`);
     return response.data;
-  }
+  },
 };
 
 export const factCheckerService = {
   generateFactLedger: async (storyId) => {
-    const response = await axios.post(`${API_BASE_URL}/fact-checker/${storyId}`);
+    const response = await axios.post(
+      `${API_BASE_URL}/fact-checker/${storyId}`,
+    );
     return response.data;
   },
 
   getFactLedger: async (storyId) => {
     const response = await axios.get(`${API_BASE_URL}/fact-checker/${storyId}`);
     return response.data;
-  }
+  },
 };

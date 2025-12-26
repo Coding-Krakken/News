@@ -1,6 +1,6 @@
-import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
-import { config } from '../config';
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { config } from "../config";
 
 export interface TokenPayload {
   userId: number;
@@ -22,7 +22,7 @@ export function generateAccessToken(payload: TokenPayload): string {
 export function generateRefreshToken(payload: TokenPayload): string {
   // Include a random JWT ID to ensure refresh tokens are unique even when
   // generated in quick succession with identical payloads.
-  const jwtId = crypto.randomBytes(8).toString('hex');
+  const jwtId = crypto.randomBytes(8).toString("hex");
   return jwt.sign({ ...payload, jti: jwtId }, config.jwt.refreshSecret, {
     expiresIn: config.jwt.refreshExpiry,
   } as jwt.SignOptions);
@@ -56,12 +56,12 @@ export function verifyRefreshToken(token: string): TokenPayload | null {
  * Hash a token for storage (used for refresh tokens)
  */
 export function hashToken(token: string): string {
-  return crypto.createHash('sha256').update(token).digest('hex');
+  return crypto.createHash("sha256").update(token).digest("hex");
 }
 
 /**
  * Generate a random token
  */
 export function generateRandomToken(): string {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString("hex");
 }

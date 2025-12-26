@@ -7,6 +7,7 @@ Targets:
 - update `/me` with empty payload returns current user
 - admin endpoints `update_user_role` and `disable_user` when user not found
 """
+
 import pytest
 from httpx import AsyncClient
 
@@ -17,12 +18,14 @@ async def _override_admin_dependency(mock_db):
     from app.utils.dependencies import get_current_admin_user
 
     # ensure admin exists
-    await mock_db.users.insert_one({
-        "username": "admin_branch",
-        "email": "admin_branch@example.com",
-        "hashed_password": "fake",
-        "role": "admin"
-    })
+    await mock_db.users.insert_one(
+        {
+            "username": "admin_branch",
+            "email": "admin_branch@example.com",
+            "hashed_password": "fake",
+            "role": "admin",
+        }
+    )
 
     def _override_admin():
         return UserModel(username="admin_branch", email="admin_branch@example.com")
@@ -34,6 +37,7 @@ async def _override_admin_dependency(mock_db):
 async def test_refresh_token_missing_sub(monkeypatch, client: AsyncClient, mock_db):
     # decode_token returns refresh type but no sub
     import app.routes.auth as auth_mod
+
     monkeypatch.setattr(auth_mod, "decode_token", lambda t: {"type": "refresh"})
 
     resp = await client.post("/api/auth/refresh?refresh_token=dummy")
@@ -45,7 +49,10 @@ async def test_refresh_token_missing_sub(monkeypatch, client: AsyncClient, mock_
 async def test_refresh_token_user_not_found(monkeypatch, client: AsyncClient, mock_db):
     # decode_token returns sub for a user that doesn't exist
     import app.routes.auth as auth_mod
-    monkeypatch.setattr(auth_mod, "decode_token", lambda t: {"type": "refresh", "sub": "ghost"})
+
+    monkeypatch.setattr(
+        auth_mod, "decode_token", lambda t: {"type": "refresh", "sub": "ghost"}
+    )
 
     resp = await client.post("/api/auth/refresh?refresh_token=ghosttoken")
     assert resp.status_code == 401
@@ -55,24 +62,25 @@ async def test_refresh_token_user_not_found(monkeypatch, client: AsyncClient, mo
 @pytest.mark.asyncio
 async def test_update_me_empty_returns_current_user(client: AsyncClient, mock_db):
     # Register and login
-    await client.post("/api/auth/register", json={
-        "username": "meuser",
-        "email": "meuser@example.com",
-        "password": "TestPass123!"
-    })
+    await client.post(
+        "/api/auth/register",
+        json={
+            "username": "meuser",
+            "email": "meuser@example.com",
+            "password": "TestPass123!",
+        },
+    )
 
     login = await client.post(
         "/api/auth/login",
         data={"username": "meuser", "password": "TestPass123!"},
-        headers={"Content-Type": "application/x-www-form-urlencoded"}
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
     )
     token = login.json()["access_token"]
 
     # Send empty update payload
     resp = await client.put(
-        "/api/auth/me",
-        json={},
-        headers={"Authorization": f"Bearer {token}"}
+        "/api/auth/me", json={}, headers={"Authorization": f"Bearer {token}"}
     )
 
     assert resp.status_code == 200

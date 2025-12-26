@@ -1,12 +1,14 @@
 # Deployment Guide
 
 This guide covers deploying the News Analytics Platform in two environments:
+
 1. **Local Development** using Docker Compose
 2. **Production Deployment** using Vercel (frontend) + Railway/Render (backend)
 
 ---
 
 ## Table of Contents
+
 - [Architecture Overview](#architecture-overview)
 - [Local Development (Docker Compose)](#local-development-docker-compose)
 - [Production Deployment](#production-deployment)
@@ -19,6 +21,7 @@ This guide covers deploying the News Analytics Platform in two environments:
 ## Architecture Overview
 
 The News Analytics Platform consists of:
+
 - **Frontend**: Vite + React SPA (static site, deployable to Vercel)
 - **Backend**: FastAPI + Python (requires a server, deploy to Railway/Render/Fly.io)
 - **Database**: MongoDB (use Atlas for production)
@@ -46,32 +49,37 @@ The News Analytics Platform consists of:
 ## Local Development (Docker Compose)
 
 ### Prerequisites
+
 - Docker and Docker Compose installed
 - Git
 
 ### Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/Coding-Krakken/News.git
    cd News
    ```
 
 2. **Configure environment variables**
+
    ```bash
    cp backend/.env.example backend/.env
    ```
-   
+
    Edit `backend/.env` and set your OpenAI API key (optional):
+
    ```env
    OPENAI_API_KEY=your_openai_api_key_here
    ```
 
 3. **Start all services**
+
    ```bash
    docker compose up
    ```
-   
+
    This starts:
    - MongoDB on `localhost:27017`
    - Backend API on `localhost:8000`
@@ -87,15 +95,17 @@ The News Analytics Platform consists of:
 If you prefer to run services individually:
 
 1. **Start MongoDB**
+
    ```bash
    # Option 1: Using Docker
    docker run -d -p 27017:27017 --name mongodb mongo:7
-   
+
    # Option 2: Using local MongoDB installation
    mongod
    ```
 
 2. **Start Backend**
+
    ```bash
    cd backend
    python -m venv venv
@@ -136,6 +146,7 @@ npm run test:frontend
 ### Overview
 
 For production, we recommend:
+
 - **Frontend**: Deploy to **Vercel** (static hosting, free tier available)
 - **Backend**: Deploy to **Railway**, **Render**, or **Fly.io** (Python support)
 - **Database**: **MongoDB Atlas** (managed MongoDB, free tier available)
@@ -168,6 +179,7 @@ For production, we recommend:
 
 3. **Configure environment variables**
    Go to your service settings and add:
+
    ```env
    ENVIRONMENT=production
    MONGODB_URL=mongodb+srv://user:pass@cluster.mongodb.net/news_analytics
@@ -233,14 +245,16 @@ For production, we recommend:
 
 4. **Set environment variables**
    In Vercel dashboard → Project Settings → Environment Variables:
-   
+
    **Production:**
+
    ```env
    VITE_API_BASE_URL=https://your-backend.railway.app/api
    VITE_ENVIRONMENT=production
    ```
-   
+
    **Preview (optional):**
+
    ```env
    VITE_API_BASE_URL=https://your-staging-backend.railway.app/api
    VITE_ENVIRONMENT=staging
@@ -271,34 +285,37 @@ For production, we recommend:
 ### Backend Environment Variables
 
 #### Required
-| Variable | Description | Local Example | Production Example |
-|----------|-------------|---------------|-------------------|
-| `MONGODB_URL` | MongoDB connection string | `mongodb://localhost:27017` | `mongodb+srv://user:pass@cluster.mongodb.net` |
-| `DATABASE_NAME` | MongoDB database name | `news_analytics` | `news_analytics` |
+
+| Variable        | Description               | Local Example               | Production Example                            |
+| --------------- | ------------------------- | --------------------------- | --------------------------------------------- |
+| `MONGODB_URL`   | MongoDB connection string | `mongodb://localhost:27017` | `mongodb+srv://user:pass@cluster.mongodb.net` |
+| `DATABASE_NAME` | MongoDB database name     | `news_analytics`            | `news_analytics`                              |
 
 #### Required for Production
-| Variable | Description | Production Example |
-|----------|-------------|-------------------|
-| `SECRET_KEY` | JWT signing key | Generate: `openssl rand -hex 32` |
-| `API_BASE_URL` | Backend API URL | `https://your-backend.railway.app` |
-| `FRONTEND_URL` | Frontend URL | `https://your-app.vercel.app` |
+
+| Variable       | Description          | Production Example                                 |
+| -------------- | -------------------- | -------------------------------------------------- |
+| `SECRET_KEY`   | JWT signing key      | Generate: `openssl rand -hex 32`                   |
+| `API_BASE_URL` | Backend API URL      | `https://your-backend.railway.app`                 |
+| `FRONTEND_URL` | Frontend URL         | `https://your-app.vercel.app`                      |
 | `CORS_ORIGINS` | Allowed CORS origins | `https://your-app.vercel.app,https://*.vercel.app` |
 
 #### Optional
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `OPENAI_API_KEY` | OpenAI API key for AI features | None (uses fallback) |
-| `ENVIRONMENT` | Deployment environment | `local` |
-| `RATE_LIMIT_ENABLED` | Enable rate limiting | `true` |
-| `RATE_LIMIT_PER_MINUTE` | Requests per minute | `60` |
-| `LOG_LEVEL` | Logging level | `INFO` |
+
+| Variable                | Description                    | Default              |
+| ----------------------- | ------------------------------ | -------------------- |
+| `OPENAI_API_KEY`        | OpenAI API key for AI features | None (uses fallback) |
+| `ENVIRONMENT`           | Deployment environment         | `local`              |
+| `RATE_LIMIT_ENABLED`    | Enable rate limiting           | `true`               |
+| `RATE_LIMIT_PER_MINUTE` | Requests per minute            | `60`                 |
+| `LOG_LEVEL`             | Logging level                  | `INFO`               |
 
 ### Frontend Environment Variables
 
-| Variable | Description | Local | Production |
-|----------|-------------|-------|------------|
-| `VITE_API_BASE_URL` | Backend API URL | `/api` (proxied) | `https://your-backend.railway.app/api` |
-| `VITE_ENVIRONMENT` | Environment name | `local` | `production` |
+| Variable            | Description      | Local            | Production                             |
+| ------------------- | ---------------- | ---------------- | -------------------------------------- |
+| `VITE_API_BASE_URL` | Backend API URL  | `/api` (proxied) | `https://your-backend.railway.app/api` |
+| `VITE_ENVIRONMENT`  | Environment name | `local`          | `production`                           |
 
 ---
 
@@ -311,6 +328,7 @@ MongoDB is schemaless, but we create indexes on startup for performance.
 ### Initial Setup
 
 On first run, the backend will automatically:
+
 1. Connect to MongoDB
 2. Create indexes on collections (articles, stories, users, sources, audit_log)
 3. Initialize empty collections
@@ -339,11 +357,13 @@ asyncio.run(seed())
 ### Backup and Restore
 
 **Backup** (using mongodump):
+
 ```bash
 mongodump --uri="mongodb+srv://user:pass@cluster.mongodb.net" --db=news_analytics --out=backup/
 ```
 
 **Restore** (using mongorestore):
+
 ```bash
 mongorestore --uri="mongodb+srv://user:pass@cluster.mongodb.net" --db=news_analytics backup/news_analytics/
 ```
@@ -355,7 +375,9 @@ mongorestore --uri="mongodb+srv://user:pass@cluster.mongodb.net" --db=news_analy
 ### Local Development Issues
 
 #### Problem: Docker containers won't start
+
 **Solution:**
+
 ```bash
 # Stop all containers
 docker compose down
@@ -368,7 +390,9 @@ docker compose up --build
 ```
 
 #### Problem: Port already in use
+
 **Solution:**
+
 ```bash
 # Find process using port 8000 or 3000
 lsof -i :8000
@@ -381,7 +405,9 @@ kill -9 <PID>
 ```
 
 #### Problem: Frontend can't connect to backend
+
 **Solution:**
+
 1. Check backend is running: `curl http://localhost:8000/health`
 2. Check CORS settings in backend
 3. Check proxy settings in `frontend/vite.config.js`
@@ -389,33 +415,43 @@ kill -9 <PID>
 ### Production Issues
 
 #### Problem: Vercel build fails
+
 **Solution:**
+
 1. Check build logs in Vercel dashboard
 2. Verify environment variables are set
 3. Test build locally: `cd frontend && npm run build`
 4. Check `vercel.json` configuration
 
 #### Problem: Backend returns 500 errors
+
 **Solution:**
+
 1. Check backend logs in Railway/Render dashboard
 2. Verify MongoDB connection string
 3. Check all required environment variables are set
 4. Test configuration validation: backend will log missing config
 
 #### Problem: CORS errors in browser
+
 **Solution:**
+
 1. Verify `CORS_ORIGINS` in backend includes your frontend URL
 2. Check frontend URL matches exactly (no trailing slash)
 3. Verify backend accepts wildcard for preview deployments: `https://*.vercel.app`
 
 #### Problem: OpenAI API errors
+
 **Solution:**
+
 1. Check API key is valid
 2. Check API key has credits
 3. App will fallback to rule-based extraction if API fails
 
 #### Problem: MongoDB connection timeout
+
 **Solution:**
+
 1. Check MongoDB Atlas IP whitelist includes `0.0.0.0/0`
 2. Verify connection string is correct
 3. Check database user has correct permissions
@@ -424,13 +460,17 @@ kill -9 <PID>
 ### Performance Issues
 
 #### Problem: Slow article ingestion
+
 **Solution:**
+
 1. Check network latency to news sources
 2. Consider adding more workers (if implementing background jobs)
 3. Implement caching for frequently accessed data
 
 #### Problem: Slow story clustering
+
 **Solution:**
+
 1. Clustering is CPU-intensive; ensure backend has adequate resources
 2. Consider implementing background job queue (Bull/BullMQ with Redis)
 3. Add progress indicators in UI
@@ -440,6 +480,7 @@ kill -9 <PID>
 ## Additional Resources
 
 ### Documentation
+
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 - [Vite Documentation](https://vitejs.dev/)
 - [MongoDB Atlas Documentation](https://docs.atlas.mongodb.com/)
@@ -447,10 +488,12 @@ kill -9 <PID>
 - [Railway Documentation](https://docs.railway.app/)
 
 ### Support
+
 - Open an issue on GitHub: https://github.com/Coding-Krakken/News/issues
 - Check existing documentation in repository
 
 ### Monitoring and Observability
+
 - Add logging: Backend uses Python logging (configurable via `LOG_LEVEL`)
 - Add error tracking: Consider integrating Sentry or similar
 - Add analytics: Consider integrating Plausible or Google Analytics
@@ -473,20 +516,26 @@ kill -9 <PID>
 ## Future Enhancements
 
 ### Background Jobs
+
 Currently, all processing is synchronous. For better performance:
+
 1. Add Redis for job queue
 2. Use Celery or BullMQ for background jobs
 3. Move ingestion and clustering to background workers
 4. Deploy workers separately (Railway/Render support workers)
 
 ### File Storage
+
 If adding file uploads in the future:
+
 1. Use S3-compatible storage (AWS S3, Cloudflare R2, Vercel Blob)
 2. Never store files on local filesystem in production
 3. Abstract storage layer with environment-based provider selection
 
 ### WebSockets / Real-time Features
+
 Currently not used. If needed:
+
 1. Vercel supports serverless WebSockets (beta)
 2. Or use separate WebSocket server (Railway/Render)
 3. Consider Server-Sent Events (SSE) as simpler alternative
@@ -496,12 +545,14 @@ Currently not used. If needed:
 ## Cost Estimates
 
 ### Free Tier (Good for testing)
+
 - **MongoDB Atlas**: Free tier (512MB storage)
 - **Vercel**: Free tier (100GB bandwidth/month)
 - **Railway**: $5/month credit (enough for small app)
 - **Total**: ~$0-5/month
 
 ### Production Scale (Medium traffic)
+
 - **MongoDB Atlas**: M10 tier (~$50/month)
 - **Vercel**: Pro tier (~$20/month)
 - **Railway**: ~$20/month (backend + workers)

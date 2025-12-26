@@ -2,7 +2,6 @@ import pytest
 import asyncio
 from typing import AsyncGenerator, Generator
 from httpx import AsyncClient
-from motor.motor_asyncio import AsyncIOMotorClient
 from mongomock_motor import AsyncMongoMockClient
 import os
 
@@ -34,7 +33,7 @@ async def mock_db():
     client = AsyncMongoMockClient()
     # Use the same database name as the environment to keep tests consistent.
     db = client.news_analytics
-    
+
     # Create indexes
     await db.articles.create_index("url", unique=True)
     await db.articles.create_index("published_date")
@@ -44,9 +43,9 @@ async def mock_db():
     await db.stories.create_index("created_at")
     # Ensure users collection exists for auth tests
     await db.users.create_index("email", unique=True)
-    
+
     yield db
-    
+
     # Cleanup
     await client.drop_database("news_analytics")
 
@@ -54,21 +53,22 @@ async def mock_db():
 @pytest.fixture
 async def client(mock_db) -> AsyncGenerator[AsyncClient, None]:
     """Provide an async HTTP client for testing the API."""
-    
+
     # Override get_database dependency
     def override_get_database():
         return mock_db
-    
+
     app.dependency_overrides[get_database] = override_get_database
     # Also set the global database in the application module so code that
     # calls `get_database()` directly (instead of using Depends) uses the
     # mock DB during tests.
     import app.database as app_database
+
     app_database.database = mock_db
-    
+
     async with AsyncClient(app=app, base_url="http://test") as ac:
         yield ac
-    
+
     app.dependency_overrides.clear()
 
 
@@ -76,6 +76,7 @@ async def client(mock_db) -> AsyncGenerator[AsyncClient, None]:
 def sample_article_data():
     """Provide sample article data for testing."""
     from datetime import datetime
+
     return {
         "url": "https://example.com/article1",
         "title": "Test Article Title",
@@ -98,8 +99,9 @@ def sample_article_data():
 def sample_articles_list(sample_article_data):
     """Provide a list of sample articles for testing."""
     from datetime import datetime, timedelta
+
     articles = []
-    
+
     for i in range(5):
         article = sample_article_data.copy()
         article["url"] = f"https://example.com/article{i}"
@@ -107,7 +109,7 @@ def sample_articles_list(sample_article_data):
         article["source_name"] = f"Source {i % 2}"  # Alternate between 2 sources
         article["published_date"] = datetime.utcnow() - timedelta(hours=i)
         articles.append(article)
-    
+
     return articles
 
 
@@ -115,6 +117,7 @@ def sample_articles_list(sample_article_data):
 def sample_story_data():
     """Provide sample story data for testing."""
     from datetime import datetime
+
     return {
         "story_id": "test_story_123",
         "title": "Test Story Title",
@@ -171,10 +174,6 @@ def mock_openai_response():
     """Provide mock OpenAI API response."""
     return {
         "choices": [
-            {
-                "message": {
-                    "content": '[{"text": "Test claim", "is_factual": true}]'
-                }
-            }
+            {"message": {"content": '[{"text": "Test claim", "is_factual": true}]'}}
         ]
     }

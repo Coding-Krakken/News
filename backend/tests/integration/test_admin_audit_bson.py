@@ -2,6 +2,7 @@
 Integration test to ensure audit log BSON types are serialized
 correctly by the admin audit-log endpoint.
 """
+
 import pytest
 from httpx import AsyncClient
 
@@ -14,12 +15,14 @@ async def _create_admin_user(client: AsyncClient, mock_db):
     from app.utils.dependencies import get_current_admin_user
 
     # Ensure user exists in DB (so other code that queries DB can find it)
-    await mock_db.users.insert_one({
-        "username": "admin_bson",
-        "email": "admin_bson@example.com",
-        "hashed_password": "fakehash",
-        "role": "admin",
-    })
+    await mock_db.users.insert_one(
+        {
+            "username": "admin_bson",
+            "email": "admin_bson@example.com",
+            "hashed_password": "fakehash",
+            "role": "admin",
+        }
+    )
 
     # Override dependency to return a User instance for admin access
     def _override_admin():
@@ -43,20 +46,19 @@ async def test_audit_log_serializes_objectid(client: AsyncClient, mock_db):
 
     oid = ObjectId()
 
-    await mock_db.audit_log.insert_one({
-        "action": "create",
-        "entity_type": "source",
-        "entity_id": "SourceWithOID",
-        "user": "admin_bson",
-        "timestamp": datetime.utcnow(),
-        "details": {
-            "ref": oid,
-            "nested": {
-                "list": [oid, {"inner": oid}],
-                "dict": {"sub": oid}
-            }
+    await mock_db.audit_log.insert_one(
+        {
+            "action": "create",
+            "entity_type": "source",
+            "entity_id": "SourceWithOID",
+            "user": "admin_bson",
+            "timestamp": datetime.utcnow(),
+            "details": {
+                "ref": oid,
+                "nested": {"list": [oid, {"inner": oid}], "dict": {"sub": oid}},
+            },
         }
-    })
+    )
 
     # Call without Authorization header because dependency is overridden
     response = await client.get("/api/admin/audit-log")
@@ -84,14 +86,16 @@ async def test_audit_log_filter_by_user(client: AsyncClient, mock_db):
 
     oid = ObjectId()
 
-    await mock_db.audit_log.insert_one({
-        "action": "create",
-        "entity_type": "source",
-        "entity_id": "SourceFilterUser",
-        "user": "admin_bson",
-        "timestamp": datetime.utcnow(),
-        "details": {"ref": oid}
-    })
+    await mock_db.audit_log.insert_one(
+        {
+            "action": "create",
+            "entity_type": "source",
+            "entity_id": "SourceFilterUser",
+            "user": "admin_bson",
+            "timestamp": datetime.utcnow(),
+            "details": {"ref": oid},
+        }
+    )
 
     # Call with user filter
     response = await client.get("/api/admin/audit-log?user=admin_bson")

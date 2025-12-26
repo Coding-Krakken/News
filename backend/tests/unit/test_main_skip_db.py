@@ -1,4 +1,3 @@
-import os
 import pytest
 from unittest.mock import AsyncMock
 
@@ -6,11 +5,12 @@ from unittest.mock import AsyncMock
 @pytest.mark.asyncio
 async def test_lifespan_skips_db_when_env_set(monkeypatch):
     # Ensure SKIP_DB_CHECK triggers the branch that skips DB initialization
-    monkeypatch.setenv('SKIP_DB_CHECK', '1')
+    monkeypatch.setenv("SKIP_DB_CHECK", "1")
 
     # Import the module and mock init/close functions that the lifespan would call
     import importlib
     import app.main as mainmod
+
     importlib.reload(mainmod)
 
     mainmod.init_db = AsyncMock()
@@ -23,4 +23,4 @@ async def test_lifespan_skips_db_when_env_set(monkeypatch):
     assert not mainmod.init_db.called
 
     # Cleanup
-    monkeypatch.delenv('SKIP_DB_CHECK', raising=False)
+    monkeypatch.delenv("SKIP_DB_CHECK", raising=False)

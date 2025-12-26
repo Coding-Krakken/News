@@ -1,17 +1,17 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  roots: ['<rootDir>/src'],
-  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  preset: "ts-jest",
+  testEnvironment: "node",
+  roots: ["<rootDir>/src"],
+  testMatch: ["**/__tests__/**/*.ts", "**/?(*.)+(spec|test).ts"],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    "^.+\\.ts$": "ts-jest",
   },
   collectCoverageFrom: [
-    'src/**/*.ts',
-    '!src/**/*.d.ts',
-    '!src/**/*.test.ts',
-    '!src/**/*.spec.ts',
-    '!src/index.ts',
+    "src/**/*.ts",
+    "!src/**/*.d.ts",
+    "!src/**/*.test.ts",
+    "!src/**/*.spec.ts",
+    "!src/index.ts",
   ],
   coverageThreshold: {
     global: {
@@ -21,9 +21,6 @@ module.exports = {
       statements: 100,
     },
   },
-  coveragePathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-  ],
-  setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
+  coveragePathIgnorePatterns: ["/node_modules/", "/dist/"],
+  setupFilesAfterEnv: ["<rootDir>/src/test/setup.ts"],
 };

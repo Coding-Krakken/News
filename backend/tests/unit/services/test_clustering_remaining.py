@@ -1,5 +1,4 @@
 import pytest
-import numpy as np
 from app.services.clustering import StoryClusteringService
 from app.models.schemas import Article
 
@@ -25,7 +24,7 @@ def test_calculate_similarity_without_embeddings():
 
 def test_calculate_similarity_with_embeddings():
     svc = StoryClusteringService()
-    vec = [0.1] * 384 if hasattr(svc.model, 'encode') else [1.0, 0.0]
+    vec = [0.1] * 384 if hasattr(svc.model, "encode") else [1.0, 0.0]
     a1 = make_article(embedding=vec)
     a2 = make_article(embedding=vec)
     sim = svc.calculate_similarity(a1, a2)

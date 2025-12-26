@@ -1,13 +1,13 @@
-import { Response } from 'express';
-import { AuthRequest } from '../middleware/auth.middleware';
-import { filterRepository } from '../services/filter.repository';
-import { logger } from '../utils/logger';
+import { Response } from "express";
+import { AuthRequest } from "../middleware/auth.middleware";
+import { filterRepository } from "../services/filter.repository";
+import { logger } from "../utils/logger";
 
 export class FilterController {
   async create(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({ error: 'Not authenticated' });
+        res.status(401).json({ error: "Not authenticated" });
         return;
       }
 
@@ -18,22 +18,22 @@ export class FilterController {
         filter_query,
       });
 
-      logger.info('Saved filter created', { 
+      logger.info("Saved filter created", {
         userId: req.user.userId,
-        filterId: filter.id 
+        filterId: filter.id,
       });
 
       res.status(201).json({ filter });
     } catch (error) {
-      logger.error('Create filter error', { error });
-      res.status(500).json({ error: 'Failed to create filter' });
+      logger.error("Create filter error", { error });
+      res.status(500).json({ error: "Failed to create filter" });
     }
   }
 
   async list(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({ error: 'Not authenticated' });
+        res.status(401).json({ error: "Not authenticated" });
         return;
       }
 
@@ -41,15 +41,15 @@ export class FilterController {
 
       res.json({ filters });
     } catch (error) {
-      logger.error('List filters error', { error });
-      res.status(500).json({ error: 'Failed to list filters' });
+      logger.error("List filters error", { error });
+      res.status(500).json({ error: "Failed to list filters" });
     }
   }
 
   async update(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({ error: 'Not authenticated' });
+        res.status(401).json({ error: "Not authenticated" });
         return;
       }
 
@@ -59,13 +59,13 @@ export class FilterController {
       const existingFilter = await filterRepository.findById(parseInt(id, 10));
 
       if (!existingFilter) {
-        res.status(404).json({ error: 'Filter not found' });
+        res.status(404).json({ error: "Filter not found" });
         return;
       }
 
       // Ensure user owns the filter
       if (existingFilter.user_id !== req.user.userId) {
-        res.status(403).json({ error: 'Forbidden' });
+        res.status(403).json({ error: "Forbidden" });
         return;
       }
 
@@ -74,22 +74,22 @@ export class FilterController {
         filter_query,
       });
 
-      logger.info('Saved filter updated', { 
+      logger.info("Saved filter updated", {
         userId: req.user.userId,
-        filterId: id 
+        filterId: id,
       });
 
       res.json({ filter });
     } catch (error) {
-      logger.error('Update filter error', { error });
-      res.status(500).json({ error: 'Failed to update filter' });
+      logger.error("Update filter error", { error });
+      res.status(500).json({ error: "Failed to update filter" });
     }
   }
 
   async delete(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({ error: 'Not authenticated' });
+        res.status(401).json({ error: "Not authenticated" });
         return;
       }
 
@@ -98,32 +98,32 @@ export class FilterController {
       const filter = await filterRepository.findById(parseInt(id, 10));
 
       if (!filter) {
-        res.status(404).json({ error: 'Filter not found' });
+        res.status(404).json({ error: "Filter not found" });
         return;
       }
 
       // Ensure user owns the filter
       if (filter.user_id !== req.user.userId) {
-        res.status(403).json({ error: 'Forbidden' });
+        res.status(403).json({ error: "Forbidden" });
         return;
       }
 
       const deleted = await filterRepository.delete(parseInt(id, 10));
 
       if (!deleted) {
-        res.status(404).json({ error: 'Filter not found' });
+        res.status(404).json({ error: "Filter not found" });
         return;
       }
 
-      logger.info('Saved filter deleted', { 
+      logger.info("Saved filter deleted", {
         userId: req.user.userId,
-        filterId: id 
+        filterId: id,
       });
 
-      res.json({ message: 'Filter deleted successfully' });
+      res.json({ message: "Filter deleted successfully" });
     } catch (error) {
-      logger.error('Delete filter error', { error });
-      res.status(500).json({ error: 'Failed to delete filter' });
+      logger.error("Delete filter error", { error });
+      res.status(500).json({ error: "Failed to delete filter" });
     }
   }
 }

@@ -1,9 +1,10 @@
 """
 Additional integration tests to exercise error branches and low-coverage routes.
 """
+
 import pytest
 from httpx import AsyncClient
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import AsyncMock
 
 
 @pytest.mark.integration
@@ -17,7 +18,9 @@ class TestCoverageAdditions:
         assert "message" in data and "version" in data
 
     @pytest.mark.asyncio
-    async def test_ingest_handles_db_update_error(self, client: AsyncClient, mock_db, monkeypatch):
+    async def test_ingest_handles_db_update_error(
+        self, client: AsyncClient, mock_db, monkeypatch
+    ):
         # Patch ingestion service to return one fake article-like object
         from app.routes.articles import ingestion_service
 
@@ -26,19 +29,24 @@ class TestCoverageAdditions:
                 self.url = "http://fake.example/1"
                 self.title = "Fake"
                 self.content = "Fake content"
+
             def model_dump(self):
                 return {"url": self.url, "title": self.title, "content": self.content}
 
         async def fake_ingest_all_sources():
             return [FakeArticle()]
 
-        monkeypatch.setattr(ingestion_service, "ingest_all_sources", fake_ingest_all_sources)
+        monkeypatch.setattr(
+            ingestion_service, "ingest_all_sources", fake_ingest_all_sources
+        )
 
         # Make the DB update_one raise to hit the inner except branch
         async def raise_update(*args, **kwargs):
             raise Exception("update failed")
 
-        monkeypatch.setattr(mock_db.articles, "update_one", AsyncMock(side_effect=raise_update))
+        monkeypatch.setattr(
+            mock_db.articles, "update_one", AsyncMock(side_effect=raise_update)
+        )
 
         resp = await client.post("/api/articles/ingest")
         assert resp.status_code == 200
@@ -68,7 +76,14 @@ class TestCoverageAdditions:
         assert "distinct error" in excinfo.value.detail
 
     @pytest.mark.asyncio
-    async def test_fact_checker_handles_service_error(self, client: AsyncClient, mock_db, sample_story_data, sample_articles_list, monkeypatch):
+    async def test_fact_checker_handles_service_error(
+        self,
+        client: AsyncClient,
+        mock_db,
+        sample_story_data,
+        sample_articles_list,
+        monkeypatch,
+    ):
         # Insert story and articles
         await mock_db.stories.insert_one(sample_story_data)
         for i, article_url in enumerate(sample_story_data["article_ids"]):
@@ -78,9 +93,13 @@ class TestCoverageAdditions:
 
         # Patch the fact checker to raise
         from app.routes.fact_checker import fact_checker
+
         async def raise_generate(*args, **kwargs):
             raise Exception("fact error")
-        monkeypatch.setattr(fact_checker, "generate_fact_ledger", AsyncMock(side_effect=raise_generate))
+
+        monkeypatch.setattr(
+            fact_checker, "generate_fact_ledger", AsyncMock(side_effect=raise_generate)
+        )
 
         resp = await client.post(f"/api/fact-checker/{sample_story_data['story_id']}")
         assert resp.status_code == 500
@@ -97,7 +116,9 @@ class TestCoverageAdditions:
         def raise_cluster(_):
             raise Exception("cluster fail")
 
-        monkeypatch.setattr(stories.clustering_service, "cluster_articles", raise_cluster)
+        monkeypatch.setattr(
+            stories.clustering_service, "cluster_articles", raise_cluster
+        )
 
         # Calling the async background function should not raise (it catches exceptions)
         await stories.cluster_articles_background()

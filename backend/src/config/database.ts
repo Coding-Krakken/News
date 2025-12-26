@@ -1,7 +1,7 @@
-import { Pool, PoolConfig } from 'pg';
-import { config } from './index';
+import { Pool, PoolConfig } from "pg";
+import { config } from "./index";
 
-const isTest = process.env.NODE_ENV === 'test';
+const isTest = process.env.NODE_ENV === "test";
 
 const dbConfig: PoolConfig = isTest
   ? {
@@ -25,20 +25,20 @@ export async function query(text: string, params?: unknown[]) {
   const start = Date.now();
   const res = await pool.query(text, params);
   const duration = Date.now() - start;
-  
-  if (config.env === 'development') {
-    console.log('Executed query', { text, duration, rows: res.rowCount });
+
+  if (config.env === "development") {
+    console.log("Executed query", { text, duration, rows: res.rowCount });
   }
-  
+
   return res;
 }
 
 export async function testConnection(): Promise<boolean> {
   try {
-    await pool.query('SELECT 1');
+    await pool.query("SELECT 1");
     return true;
   } catch (error) {
-    console.error('Database connection failed:', error);
+    console.error("Database connection failed:", error);
     return false;
   }
 }

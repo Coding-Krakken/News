@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { bookmarkService } from '../services/bookmarkService';
-import { Bookmark } from '../types';
+import React, { useState, useEffect } from "react";
+import { bookmarkService } from "../services/bookmarkService";
+import { Bookmark } from "../types";
 
 export function BookmarksPage() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadBookmarks();
@@ -17,7 +17,9 @@ export function BookmarksPage() {
       setBookmarks(data);
     } catch (err: unknown) {
       type ErrorResponse = { response?: { data?: { error?: string } } };
-      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to load bookmarks';
+      const msg =
+        (err as ErrorResponse)?.response?.data?.error ||
+        "Failed to load bookmarks";
       setError(msg);
     } finally {
       setLoading(false);
@@ -27,10 +29,12 @@ export function BookmarksPage() {
   const handleDelete = async (id: number) => {
     try {
       await bookmarkService.delete(id);
-      setBookmarks(bookmarks.filter(b => b.id !== id));
+      setBookmarks(bookmarks.filter((b) => b.id !== id));
     } catch (err: unknown) {
       type ErrorResponse = { response?: { data?: { error?: string } } };
-      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to delete bookmark';
+      const msg =
+        (err as ErrorResponse)?.response?.data?.error ||
+        "Failed to delete bookmark";
       alert(msg);
     }
   };
@@ -43,12 +47,12 @@ export function BookmarksPage() {
     <div className="bookmarks-page">
       <h1>My Bookmarks</h1>
       {error && <div className="error">{error}</div>}
-      
+
       {bookmarks.length === 0 ? (
         <p>No bookmarks yet</p>
       ) : (
         <ul>
-          {bookmarks.map(bookmark => (
+          {bookmarks.map((bookmark) => (
             <li key={bookmark.id}>
               <span>
                 {bookmark.target_type}: {bookmark.target_id}

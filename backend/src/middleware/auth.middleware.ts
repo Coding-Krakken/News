@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import { verifyAccessToken } from '../utils/jwt';
-import { logger } from '../utils/logger';
+import { Request, Response, NextFunction } from "express";
+import { verifyAccessToken } from "../utils/jwt";
+import { logger } from "../utils/logger";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -9,13 +9,17 @@ export interface AuthRequest extends Request {
   };
 }
 
-export function authenticate(req: AuthRequest, res: Response, next: NextFunction): void {
+export function authenticate(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): void {
   try {
     // Try to get token from Authorization header
     const authHeader = req.headers.authorization;
     let token: string | undefined;
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.substring(7);
     }
 
@@ -25,14 +29,14 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
     }
 
     if (!token) {
-      res.status(401).json({ error: 'Authentication required' });
+      res.status(401).json({ error: "Authentication required" });
       return;
     }
 
     const payload = verifyAccessToken(token);
 
     if (!payload) {
-      res.status(401).json({ error: 'Invalid or expired token' });
+      res.status(401).json({ error: "Invalid or expired token" });
       return;
     }
 
@@ -43,17 +47,21 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
 
     next();
   } catch (error) {
-    logger.error('Authentication error', { error });
-    res.status(401).json({ error: 'Authentication failed' });
+    logger.error("Authentication error", { error });
+    res.status(401).json({ error: "Authentication failed" });
   }
 }
 
-export function optionalAuth(req: AuthRequest, res: Response, next: NextFunction): void {
+export function optionalAuth(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): void {
   try {
     const authHeader = req.headers.authorization;
     let token: string | undefined;
 
-    if (authHeader && authHeader.startsWith('Bearer ')) {
+    if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.substring(7);
     }
 
@@ -73,7 +81,7 @@ export function optionalAuth(req: AuthRequest, res: Response, next: NextFunction
 
     next();
   } catch (error) {
-    logger.error('Optional authentication error', { error });
+    logger.error("Optional authentication error", { error });
     next();
   }
 }

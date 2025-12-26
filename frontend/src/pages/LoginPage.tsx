@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 export function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   type LocationState = { from?: { pathname?: string } } | undefined;
-  const from = (location.state as LocationState)?.from?.pathname || '/';
+  const from = (location.state as LocationState)?.from?.pathname || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
@@ -24,7 +24,8 @@ export function LoginPage() {
       navigate(from, { replace: true });
     } catch (err: unknown) {
       type ErrorResponse = { response?: { data?: { error?: string } } };
-      const msg = (err as ErrorResponse)?.response?.data?.error || 'Login failed';
+      const msg =
+        (err as ErrorResponse)?.response?.data?.error || "Login failed";
       setError(msg);
     } finally {
       setLoading(false);
@@ -59,7 +60,7 @@ export function LoginPage() {
         </div>
         {error && <div className="error">{error}</div>}
         <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
       <p>

@@ -1,13 +1,13 @@
-import { Response } from 'express';
-import { AuthRequest } from '../middleware/auth.middleware';
-import { bookmarkRepository } from '../services/bookmark.repository';
-import { logger } from '../utils/logger';
+import { Response } from "express";
+import { AuthRequest } from "../middleware/auth.middleware";
+import { bookmarkRepository } from "../services/bookmark.repository";
+import { logger } from "../utils/logger";
 
 export class BookmarkController {
   async create(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({ error: 'Not authenticated' });
+        res.status(401).json({ error: "Not authenticated" });
         return;
       }
 
@@ -17,11 +17,11 @@ export class BookmarkController {
       const existing = await bookmarkRepository.findByTarget(
         req.user.userId,
         target_type,
-        target_id
+        target_id,
       );
 
       if (existing) {
-        res.status(409).json({ error: 'Bookmark already exists' });
+        res.status(409).json({ error: "Bookmark already exists" });
         return;
       }
 
@@ -30,22 +30,22 @@ export class BookmarkController {
         target_id,
       });
 
-      logger.info('Bookmark created', { 
+      logger.info("Bookmark created", {
         userId: req.user.userId,
-        bookmarkId: bookmark.id 
+        bookmarkId: bookmark.id,
       });
 
       res.status(201).json({ bookmark });
     } catch (error) {
-      logger.error('Create bookmark error', { error });
-      res.status(500).json({ error: 'Failed to create bookmark' });
+      logger.error("Create bookmark error", { error });
+      res.status(500).json({ error: "Failed to create bookmark" });
     }
   }
 
   async list(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({ error: 'Not authenticated' });
+        res.status(401).json({ error: "Not authenticated" });
         return;
       }
 
@@ -53,15 +53,15 @@ export class BookmarkController {
 
       res.json({ bookmarks });
     } catch (error) {
-      logger.error('List bookmarks error', { error });
-      res.status(500).json({ error: 'Failed to list bookmarks' });
+      logger.error("List bookmarks error", { error });
+      res.status(500).json({ error: "Failed to list bookmarks" });
     }
   }
 
   async delete(req: AuthRequest, res: Response): Promise<void> {
     try {
       if (!req.user) {
-        res.status(401).json({ error: 'Not authenticated' });
+        res.status(401).json({ error: "Not authenticated" });
         return;
       }
 
@@ -73,43 +73,47 @@ export class BookmarkController {
       // Delete by ID
       if (id) {
         const bookmark = await bookmarkRepository.findById(parseInt(id, 10));
-        
+
         if (!bookmark) {
-          res.status(404).json({ error: 'Bookmark not found' });
+          res.status(404).json({ error: "Bookmark not found" });
           return;
         }
 
         // Ensure user owns the bookmark
         if (bookmark.user_id !== req.user.userId) {
-          res.status(403).json({ error: 'Forbidden' });
+          res.status(403).json({ error: "Forbidden" });
           return;
         }
 
         deleted = await bookmarkRepository.delete(parseInt(id, 10));
-      } 
+      }
       // Delete by target
       else if (target_type && target_id) {
         deleted = await bookmarkRepository.deleteByTarget(
           req.user.userId,
           target_type as string,
-          target_id as string
+          target_id as string,
         );
       } else {
-        res.status(400).json({ error: 'Either id or target_type and target_id are required' });
+        res
+          .status(400)
+          .json({
+            error: "Either id or target_type and target_id are required",
+          });
         return;
       }
 
       if (!deleted) {
-        res.status(404).json({ error: 'Bookmark not found' });
+        res.status(404).json({ error: "Bookmark not found" });
         return;
       }
 
-      logger.info('Bookmark deleted', { userId: req.user.userId });
+      logger.info("Bookmark deleted", { userId: req.user.userId });
 
-      res.json({ message: 'Bookmark deleted successfully' });
+      res.json({ message: "Bookmark deleted successfully" });
     } catch (error) {
-      logger.error('Delete bookmark error', { error });
-      res.status(500).json({ error: 'Failed to delete bookmark' });
+      logger.error("Delete bookmark error", { error });
+      res.status(500).json({ error: "Failed to delete bookmark" });
     }
   }
 }

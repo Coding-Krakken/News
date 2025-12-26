@@ -1,10 +1,9 @@
 """
 Rate limiting middleware for API endpoints.
 """
-from slowapi import Limiter, _rate_limit_exceeded_handler
+
+from slowapi import Limiter
 from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from fastapi import Request
 import os
 import logging
 
@@ -22,7 +21,9 @@ if TESTING:
         limiter.enabled = False
     except AttributeError:
         # The enabled attribute doesn't exist on this version of slowapi
-        logging.warning("Could not disable rate limiter for tests - enabled attribute not available")
+        logging.warning(
+            "Could not disable rate limiter for tests - enabled attribute not available"
+        )
 else:
     # In non-test environments, check if rate limiting is enabled via config
     try:
@@ -31,7 +32,9 @@ else:
             limiter.enabled = False
     except (ImportError, ValueError) as e:
         # If config loading fails, keep limiter enabled as a safe default
-        logging.warning(f"Could not load rate limit config, keeping limiter enabled: {e}")
+        logging.warning(
+            f"Could not load rate limit config, keeping limiter enabled: {e}"
+        )
 
 # Rate limit configurations
 RATE_LIMITS = {

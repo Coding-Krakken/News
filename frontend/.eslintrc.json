@@ -28,8 +28,7 @@
     "react": {
       "version": "detect"
     }
-  }
-  ,
+  },
   "overrides": [
     {
       "files": ["src/**/__tests__/**", "src/**/*.test.*", "src/**/*.spec.*"],
@@ -44,4 +43,3 @@
     }
   ]
 }
-
