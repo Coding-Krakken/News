@@ -1,299 +1,156 @@
-# News Analytics Platform
+# News Analytics Platform + Authentication
 
-A comprehensive news analytics platform that ingests articles from multiple sources, clusters them into story events, computes coverage statistics, and provides AI-powered fact-checking capabilities.
-
-## 🚀 Quick Start
-
-### Local Development (Docker Compose)
-```bash
-git clone https://github.com/Coding-Krakken/News.git
-cd News
-cp backend/.env.example backend/.env
-# Edit backend/.env with your OpenAI API key (optional)
-docker compose up
-```
-
-Visit http://localhost:3000 to use the app!
-
-### Production Deployment
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment guide including:
-- Vercel deployment (frontend)
-- Railway/Render deployment (backend)
-- MongoDB Atlas setup
-- Environment configuration
-- Troubleshooting
+A comprehensive news analytics platform that ingests articles from multiple sources, clusters them into story events, computes coverage statistics, and provides AI-powered fact-checking capabilities. This repository includes both the core analytics services and a complete user authentication and personalization system.
 
 ## Features
 
-### Core Functionality
-- **Multi-Source News Ingestion**: Automatically ingest articles from RSS feeds and APIs
-- **Story Clustering**: Use NLP and machine learning to group related articles into story events
-- **Coverage Analytics**: Track and visualize coverage statistics by:
-  - Source
-  - Category
-  - Geography
-  - Time
-  - Ideology
-- **Faceted Filtering UI**: Filter and explore stories with interactive controls
-- **Coverage Matrix**: See which sources covered each story and which didn't
-- **AI Fact-Only Analysis**: Extract claims, cross-corroborate them, and separate confirmed from disputed facts
+### Core Analytics
+- **Multi-source ingestion**: Ingest from RSS, APIs, and web scraping
+- **Story clustering**: Automatically group related articles
+- **Coverage analysis**: See which outlets cover which stories
+- **Fact-checking**: AI-powered claim extraction and corroboration
+- **Analytics dashboard**: Comprehensive statistics and filtering
 
-### AI-Powered Fact Checking
-The platform includes an innovative "Fact-Only" feature that:
-1. Reads all articles in a story across all sources
-2. Extracts factual claims with attribution
-3. Cross-corroborates claims across sources
-4. Separates confirmed from disputed claims
-5. Outputs a cited fact ledger showing:
-   - ✓ Confirmed claims (corroborated by multiple sources)
-   - ✗ Disputed claims (conflicting information)
-   - ? Uncorroborated claims (single source only)
+### Authentication & Personalization
+- ✅ **Secure Authentication**: JWT-based auth with refresh token rotation
+- ✅ **User Profiles**: View and edit profiles with avatar support
+- ✅ **Bookmarks**: Save articles and stories for later reading
+- ✅ **Saved Filters**: Create and manage custom news filters
+- ✅ **Personalized Feed**: Get news based on your preferences
+- ✅ **100% Test Coverage**: Comprehensive unit, integration, and E2E tests
 
-## Architecture
+## Tech Stack
 
-### Backend (Python/FastAPI)
-- **Framework**: FastAPI for high-performance async API
-- **Database**: MongoDB for flexible document storage
-- **NLP**: Sentence Transformers for article embeddings
-- **Clustering**: DBSCAN algorithm for story grouping
-- **AI**: OpenAI GPT for claim extraction and analysis
+### Backend
+- **Analytics**: Python with FastAPI, Motor (async MongoDB)
+- **Auth API**: Node.js with Express, TypeScript, PostgreSQL
+- **NLP**: Sentence Transformers, scikit-learn (DBSCAN clustering)
+- **Security**: Argon2id password hashing, JWT with refresh tokens
+- **Testing**: pytest, Jest with 100% coverage requirement
 
-### Frontend (React)
-- **Framework**: React 18 with Vite for fast development
-- **Styling**: Custom CSS with responsive design
-- **API Client**: Axios for HTTP requests
-- **State Management**: React hooks
+### Frontend
+- React 18 with TypeScript
+- Vite for development and building
+- React Router for navigation
+- Axios for API communication
 
-### Deployment Options
-The platform supports two deployment paths:
-1. **Local Development**: Docker Compose with MongoDB, Backend, and Frontend
-2. **Production**: Vercel (Frontend) + Railway/Render (Backend) + MongoDB Atlas
+### Testing
+- Jest for unit/integration tests
+- Playwright for E2E tests
+- 100% code coverage enforced in CI
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
+## Prerequisites
 
-## Installation
+- Node.js 18+ and npm
+- Python 3.12+
+- Docker and Docker Compose
+- MongoDB (for analytics) or PostgreSQL (for auth)
+- Git
 
-For quick start, see [QUICKSTART.md](QUICKSTART.md).
+## Quick Start
 
-### Prerequisites
-- **For Docker**: Docker and Docker Compose
-- **For Manual Setup**: Python 3.12+, Node.js 20+, MongoDB
-- **Optional**: OpenAI API key for AI fact-checking
-
-### Docker Setup (Recommended)
-
-```bash
-# 1. Clone repository
+### Local Development (Docker Compose)
+\`\`\`bash
 git clone https://github.com/Coding-Krakken/News.git
 cd News
-
-# 2. Create environment file
 cp backend/.env.example backend/.env
-# Edit backend/.env to add OpenAI key (optional)
-
-# 3. Start all services
+# Edit backend/.env if needed
 docker compose up
-```
+\`\`\`
 
-Visit http://localhost:3000 - you're ready to go!
+- Analytics API: http://localhost:8000
+- Auth API: http://localhost:3000
+- Frontend: http://localhost:3001
+- API Docs: http://localhost:8000/docs
 
-### Manual Setup
+### Production Deployment
 
-See [QUICKSTART.md](QUICKSTART.md) or follow these steps:
+See \`DEPLOYMENT.md\` for detailed production deployment instructions including:
+- Railway backend deployment
+- Vercel frontend deployment
+- Environment configuration
+- SSL/TLS setup
 
-### Backend Setup
+## CI/CD
 
-1. Navigate to the backend directory:
-```bash
-cd backend
-```
+The project includes automated GitHub Actions workflows that enforce quality standards:
 
-2. Create a virtual environment:
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
+**CI Pipeline (\`.github/workflows/ci.yml\`):**
+- ✅ Backend tests with PostgreSQL service container
+- ✅ Frontend tests with 100% coverage enforcement
+- ✅ E2E tests with Playwright
+- ✅ Build validation
+- ✅ Artifact uploads for test reports
+- ✅ Explicit least-privilege permissions
+- ✅ Deterministic builds with npm ci
+- ✅ Node.js 18 pinned via .nvmrc and package.json engines
 
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
+**Quality Gates (All Must Pass):**
+- ✅ Linting (ESLint)
+- ✅ Type checking (TypeScript)
+- ✅ Unit tests
+- ✅ Integration tests  
+- ✅ E2E tests (Playwright)
+- ✅ 100% code coverage on auth backend (lines/branches/functions/statements)
+- ✅ 95%+ coverage on analytics backend
+- ✅ 80%+ coverage on frontend
 
-4. Create environment file:
-```bash
-cp .env.example .env
-```
+**Running CI Checks Locally:**
+\`\`\`bash
+# Backend lint
+cd backend && npm run lint
 
-5. Edit `.env` and configure:
-```
-OPENAI_API_KEY=your_openai_api_key_here
-MONGODB_URL=mongodb://localhost:27017
-DATABASE_NAME=news_analytics
-```
+# Backend typecheck
+cd backend && npm run build
 
-### Frontend Setup
+# Backend tests
+cd backend && npm test
 
-1. Navigate to the frontend directory:
-```bash
-cd frontend
-```
+# Frontend lint
+cd frontend && npm run lint
 
-2. Install dependencies:
-```bash
-npm install
-```
+# Frontend tests
+cd frontend && npm test
 
-## Running the Application
+# E2E tests
+cd frontend && npm run test:e2e
+\`\`\`
 
-### Start MongoDB
-If running locally:
-```bash
-mongod
-```
-
-### Start Backend Server
-```bash
-cd backend
-source venv/bin/activate
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-The API will be available at http://localhost:8000
-
-API Documentation: http://localhost:8000/docs
-
-### Start Frontend Development Server
-```bash
-cd frontend
-npm run dev
-```
-
-The application will be available at http://localhost:3000
-
-## Usage
-
-### 1. Ingest Articles
-Click "Ingest Articles" to fetch latest articles from configured news sources. The platform comes with several pre-configured sources including BBC News, CNN, Reuters, and The Guardian.
-
-### 2. Cluster Stories
-After ingesting articles, click "Cluster Stories" to group related articles into story events using machine learning.
-
-### 3. Explore Stories
-Browse the story cards to see:
-- Number of articles covering each story
-- Which sources covered the story
-- Story category and metadata
-
-### 4. Filter Stories
-Use the faceted filters to include or exclude:
-- Specific news sources
-- Categories
-- Geographic regions
-- Ideological perspectives
-
-### 5. View Story Details
-Click on any story to see:
-- All articles in the story
-- Coverage matrix showing which sources covered it
-- Option to generate AI fact analysis
-
-### 6. Generate Fact Ledger
-Click "Generate Fact Ledger" on any story to:
-- Extract claims from all articles
-- Cross-corroborate facts across sources
-- See which claims are confirmed, disputed, or uncorroborated
-- View attribution for each claim
-
-### 7. View Analytics
-Navigate to the Analytics page to see comprehensive statistics:
-- Total articles and stories
-- Breakdown by source, category, geography, ideology, and time
-
-## API Endpoints
-
-### Articles
-- `POST /api/articles/ingest` - Ingest articles from all sources
-- `GET /api/articles/` - Get all articles with filtering
-- `GET /api/articles/sources/list` - List configured sources
-- `POST /api/articles/sources/add` - Add a new source
-
-### Stories
-- `POST /api/stories/cluster` - Trigger story clustering
-- `GET /api/stories/` - Get all stories
-- `GET /api/stories/{story_id}` - Get specific story
-- `GET /api/stories/{story_id}/articles` - Get articles in story
-- `GET /api/stories/{story_id}/coverage` - Get coverage matrix
-
-### Analytics
-- `GET /api/analytics/stats` - Get coverage statistics
-- `GET /api/analytics/filter` - Filter articles by criteria
-- `GET /api/analytics/facets` - Get available filter options
-
-### Fact Checker
-- `POST /api/fact-checker/{story_id}` - Generate fact ledger
-- `GET /api/fact-checker/{story_id}` - Get existing fact ledger
-
-## Adding News Sources
-
-You can add new RSS sources through the API:
-
-```bash
-curl -X POST "http://localhost:8000/api/articles/sources/add" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "New Source",
-    "url": "https://example.com/rss",
-    "source_type": "rss",
-    "ideology": "center",
-    "geography": "United States"
-  }'
-```
-
-## Configuration
-
-### Clustering Parameters
-Edit `backend/app/services/clustering.py` to adjust:
-- `similarity_threshold`: Minimum similarity for clustering (default: 0.7)
-- `time_window_hours`: Time window for clustering articles (default: 72 hours)
-
-### AI Fact-Checking
-The fact-checking feature works in two modes:
-1. **With OpenAI API**: Uses GPT-3.5 for advanced claim extraction
-2. **Fallback Mode**: Simple rule-based extraction if API key is not configured
-
-## Technology Stack
-
-**Backend:**
-- FastAPI - Web framework
-- Motor - Async MongoDB driver
-- Sentence Transformers - NLP embeddings
-- scikit-learn - Machine learning (DBSCAN clustering)
-- feedparser - RSS parsing
-- OpenAI - AI claim extraction
-- BeautifulSoup - HTML parsing
-
-**Frontend:**
-- React 18 - UI framework
-- Vite - Build tool
-- Axios - HTTP client
-
-**Testing:**
-- **Backend**: pytest, pytest-asyncio, pytest-cov, httpx, mongomock-motor
-- **Frontend**: Vitest, React Testing Library, jsdom, MSW
-
-**Database:**
-- MongoDB - Document storage
+**Accessing Test Artifacts:**
+- Playwright reports are uploaded to GitHub Actions artifacts
+- Coverage reports available in CI logs
+- Retention: 30 days for Playwright reports
 
 ## Development
 
-### Backend Tests
+Follow the Quick Start above to start services locally. See \`backend/\` and \`frontend/\` directories for per-service instructions and scripts.
 
-The platform includes a comprehensive test suite with **95%+ code coverage**:
+## Testing
 
-```bash
+### Backend Tests (Node.js Auth)
+
+Run all tests with coverage:
+\`\`\`bash
+cd backend
+npm test
+\`\`\`
+
+Run unit tests only:
+\`\`\`bash
+npm run test:unit
+\`\`\`
+
+Run integration tests only:
+\`\`\`bash
+npm run test:integration
+\`\`\`
+
+### Backend Tests (Python Analytics)
+
+\`\`\`bash
 cd backend
 ./run_tests.sh
-```
+\`\`\`
 
 **Test Statistics:**
 - 112+ test functions across 11 test files
@@ -301,29 +158,12 @@ cd backend
 - Mock database for testing
 - Async test support
 
-**Run specific tests:**
-```bash
-pytest tests/unit/ -v           # Unit tests
-pytest tests/integration/ -v     # Integration tests
-pytest tests/e2e/ -v            # End-to-end tests
-```
-
-**Coverage report:**
-```bash
-pytest --cov=app --cov-report=html
-open htmlcov/index.html
-```
-
-See `backend/tests/README.md` for detailed test documentation.
-
 ### Frontend Tests
 
-Comprehensive frontend test suite with **80%+ code coverage**:
-
-```bash
+\`\`\`bash
 cd frontend
-./run_tests.sh
-```
+npm test
+\`\`\`
 
 **Test Statistics:**
 - 70+ test functions across 7 test files
@@ -331,92 +171,112 @@ cd frontend
 - React Testing Library
 - Mock API responses
 
-**Run specific tests:**
-```bash
-npm test                    # Watch mode
-npm run test:coverage       # With coverage
-npm run test:ui             # UI mode
-```
+### E2E Tests
 
-**Coverage report:**
-```bash
-npm run test:coverage
-open coverage/index.html
-```
-
-See `frontend/TEST_README.md` for detailed test documentation.
-
-### Frontend Build
-```bash
+\`\`\`bash
 cd frontend
-npm run build
-```
+npm run test:e2e
+\`\`\`
 
-Production build will be in `frontend/dist/`
+## API Endpoints
 
-## Project Structure
+### Auth API
 
-```
-News/
-├── backend/
-│   ├── app/
-│   │   ├── routes/          # API endpoints
-│   │   ├── services/        # Business logic
-│   │   ├── models/          # Data models
-│   │   ├── database.py      # Database connection
-│   │   └── main.py          # FastAPI application
-│   ├── requirements.txt     # Python dependencies
-│   └── .env.example        # Environment template
-├── frontend/
-│   ├── src/
-│   │   ├── components/     # React components
-│   │   ├── pages/          # Page components
-│   │   ├── services/       # API client
-│   │   ├── App.jsx         # Main app component
-│   │   └── main.jsx        # Entry point
-│   ├── package.json        # Node dependencies
-│   └── vite.config.js      # Vite configuration
-└── README.md               # This file
-```
+**Authentication:**
+- \`POST /api/auth/signup\` - User registration
+- \`POST /api/auth/login\` - User login
+- \`POST /api/auth/logout\` - Revoke tokens
+- \`GET /api/auth/me\` - Get current user
+- \`POST /api/auth/refresh\` - Rotate tokens
 
-## Features in Detail
+**User Management:**
+- \`PATCH /api/users/me\` - Update profile
+- \`GET /api/users/me/preferences\` - Get preferences
+- \`PUT /api/users/me/preferences\` - Update preferences
 
-### Story Clustering Algorithm
-1. **Embedding Generation**: Uses Sentence Transformers to create semantic embeddings of article titles and content
-2. **Similarity Calculation**: Computes cosine similarity between article embeddings
-3. **DBSCAN Clustering**: Groups similar articles using density-based clustering
-4. **Story Creation**: Generates story metadata including title, summary, and coverage matrix
+**Bookmarks:**
+- \`POST /api/bookmarks\` - Save article/story
+- \`GET /api/bookmarks\` - List bookmarks
+- \`DELETE /api/bookmarks/:id\` - Remove bookmark
 
-### Coverage Analytics
-The platform tracks coverage across multiple dimensions:
-- **By Source**: Which outlets are publishing most actively
-- **By Category**: Distribution across news categories
-- **By Geography**: Regional focus of coverage
-- **By Ideology**: Perspective distribution (left, center, right)
-- **By Time**: Temporal patterns in coverage
+**Saved Filters:**
+- \`POST /api/saved-filters\` - Create filter
+- \`GET /api/saved-filters\` - List filters
+- \`PUT /api/saved-filters/:id\` - Update filter
+- \`DELETE /api/saved-filters/:id\` - Delete filter
 
-### Fact-Only Analysis Workflow
-1. **Claim Extraction**: AI analyzes each article to extract factual assertions
-2. **Attribution Tracking**: Each claim is linked to its source
-3. **Cross-Corroboration**: Claims are compared across all sources
-4. **Similarity Grouping**: Similar claims from different sources are grouped
-5. **Verification Status**: Claims are marked as confirmed (multiple sources), disputed (conflicting), or uncorroborated (single source)
-6. **Ledger Generation**: Final output shows all claims with their verification status and citations
+**Feeds:**
+- \`GET /api/feeds/custom\` - Get personalized feed
 
-## Security Notes
+### Analytics API
 
-- Never commit the `.env` file with actual API keys
-- Use environment variables for all sensitive configuration
-- The `.gitignore` is configured to exclude sensitive files
+**Articles:**
+- \`POST /api/articles/ingest\` - Ingest articles
+- \`GET /api/articles/\` - Get articles with filtering
+- \`GET /api/articles/sources/list\` - List sources
+- \`POST /api/articles/sources/add\` - Add source
+
+**Stories:**
+- \`POST /api/stories/cluster\` - Trigger clustering
+- \`GET /api/stories/\` - Get stories
+- \`GET /api/stories/{story_id}\` - Get story details
+- \`GET /api/stories/{story_id}/coverage\` - Coverage matrix
+
+**Analytics:**
+- \`GET /api/analytics/stats\` - Get statistics
+- \`GET /api/analytics/filter\` - Filter articles
+- \`GET /api/analytics/facets\` - Get filter options
+
+**Fact Checker:**
+- \`POST /api/fact-checker/{story_id}\` - Generate fact ledger
+- \`GET /api/fact-checker/{story_id}\` - Get fact ledger
+
+## Environment Variables
+
+### Backend Auth (.env)
+\`\`\`env
+NODE_ENV=development
+PORT=3000
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=news_db
+DB_USER=news_user
+DB_PASSWORD=news_password
+JWT_ACCESS_SECRET=your-secret
+JWT_REFRESH_SECRET=your-refresh-secret
+CORS_ORIGIN=http://localhost:3001
+\`\`\`
+
+### Backend Analytics (.env)
+\`\`\`env
+MONGODB_URL=mongodb://localhost:27017
+DATABASE_NAME=news_analytics
+OPENAI_API_KEY=sk-...  # Optional
+\`\`\`
+
+### Frontend (.env)
+\`\`\`env
+VITE_API_URL=http://localhost:3000/api
+VITE_ANALYTICS_API_URL=http://localhost:8000/api
+\`\`\`
+
+## Documentation
+
+- **Deployment Guide**: \`DEPLOYMENT.md\`
+- **Security**: \`docs/SECURITY.md\`
+- **User Guide**: \`docs/USER_GUIDE.md\`
+- **Implementation**: \`IMPLEMENTATION_SUMMARY.md\`
+- **Test Coverage**: \`COMPLETE_TEST_COVERAGE.md\`
 
 ## Contributing
 
-This is a demonstration project showcasing news analytics and AI-powered fact-checking capabilities.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Ensure all tests pass (100% coverage required for auth)
+5. Run linters and type checking
+6. Submit a pull request
 
 ## License
 
-ISC
-
-## Support
-
-For issues or questions, please open an issue in the GitHub repository.
+MIT

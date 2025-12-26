@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "News Analytics Platform with dual deployment support",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
     "dev": "echo 'Use: docker compose up OR run backend and frontend separately'",
     "dev:backend": "cd backend && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
@@ -14,6 +18,8 @@
     "test": "npm run test:backend && npm run test:frontend",
     "test:backend": "cd backend && ./run_tests.sh",
     "test:frontend": "cd frontend && ./run_tests.sh",
+    "test:e2e": "bash scripts/run_e2e.sh",
+    "test:e2e:local": "bash scripts/run_e2e.sh",
     "install:all": "cd backend && pip install -r requirements.txt && cd ../frontend && npm install",
     "vercel:build": "cd frontend && npm install && npm run build"
   },
