@@ -15,8 +15,10 @@ export function BookmarksPage() {
     try {
       const data = await bookmarkService.list();
       setBookmarks(data);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load bookmarks');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to load bookmarks';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -26,8 +28,10 @@ export function BookmarksPage() {
     try {
       await bookmarkService.delete(id);
       setBookmarks(bookmarks.filter(b => b.id !== id));
-    } catch (err: any) {
-      alert('Failed to delete bookmark');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to delete bookmark';
+      alert(msg);
     }
   };
 

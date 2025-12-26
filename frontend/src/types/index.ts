@@ -10,8 +10,8 @@ export interface User {
 export interface UserPreference {
   id: number;
   user_id: number;
-  custom_feed_config: Record<string, any>;
-  default_filters: Record<string, any>;
+  custom_feed_config: Record<string, unknown>;
+  default_filters: Record<string, unknown>;
   timezone: string;
   created_at: string;
   updated_at: string;
@@ -29,7 +29,7 @@ export interface SavedFilter {
   id: number;
   user_id: number;
   name: string;
-  filter_query: Record<string, any>;
+  filter_query: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }

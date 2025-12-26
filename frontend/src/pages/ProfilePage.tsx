@@ -31,8 +31,10 @@ export function ProfilePage() {
       });
       setSuccess('Profile updated successfully');
       setEditing(false);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to update profile');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to update profile';
+      setError(msg);
     } finally {
       setLoading(false);
     }

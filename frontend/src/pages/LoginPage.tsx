@@ -11,7 +11,8 @@ export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = (location.state as any)?.from?.pathname || '/';
+  type LocationState = { from?: { pathname?: string } } | undefined;
+  const from = (location.state as LocationState)?.from?.pathname || '/';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,8 +22,10 @@ export function LoginPage() {
     try {
       await login({ email, password });
       navigate(from, { replace: true });
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Login failed');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Login failed';
+      setError(msg);
     } finally {
       setLoading(false);
     }

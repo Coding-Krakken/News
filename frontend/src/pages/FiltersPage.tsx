@@ -18,8 +18,10 @@ export function FiltersPage() {
     try {
       const data = await filterService.list();
       setFilters(data);
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to load filters');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to load filters';
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -35,8 +37,10 @@ export function FiltersPage() {
       setName('');
       setFilterQuery('');
       setShowForm(false);
-    } catch (err: any) {
-      alert(err.response?.data?.error || 'Failed to create filter');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to create filter';
+      alert(msg);
     }
   };
 
@@ -44,8 +48,10 @@ export function FiltersPage() {
     try {
       await filterService.delete(id);
       setFilters(filters.filter(f => f.id !== id));
-    } catch (err: any) {
-      alert('Failed to delete filter');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Failed to delete filter';
+      alert(msg);
     }
   };
 

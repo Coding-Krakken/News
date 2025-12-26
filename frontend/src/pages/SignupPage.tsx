@@ -23,8 +23,10 @@ export function SignupPage() {
         display_name: displayName || undefined,
       });
       navigate('/');
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Signup failed');
+    } catch (err: unknown) {
+      type ErrorResponse = { response?: { data?: { error?: string } } };
+      const msg = (err as ErrorResponse)?.response?.data?.error || 'Signup failed';
+      setError(msg);
     } finally {
       setLoading(false);
     }

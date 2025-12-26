@@ -2,7 +2,7 @@ import { apiClient } from './apiClient';
 import { SavedFilter } from '../types';
 
 export const filterService = {
-  async create(name: string, filterQuery: Record<string, any>): Promise<SavedFilter> {
+  async create(name: string, filterQuery: Record<string, unknown>): Promise<SavedFilter> {
     const response = await apiClient.post<{ filter: SavedFilter }>('/saved-filters', {
       name,
       filter_query: filterQuery,
