@@ -79,7 +79,6 @@ describe('Filter Integration Tests', () => {
     });
 
     it('should not update other user filters', async () => {
-      const timestamp = Date.now();
       const [user1, user2] = await TestHelpers.createMultipleUsers(2);
       const { accessToken } = TestHelpers.generateAuthTokens(user1.id, user1.email);
       const filter = await TestHelpers.createFilter(user2.id);
