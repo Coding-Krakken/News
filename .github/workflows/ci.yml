@@ -60,7 +60,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
-          PGPASSWORD=news_password psql -h localhost -p 5433 -U news_user -c "CREATE ROLE root WITH LOGIN PASSWORD 'news_password';" || true
+          PGPASSWORD=news_password psql -h localhost -p 5433 -U news_user -d news_test_db -c "CREATE ROLE root WITH LOGIN PASSWORD 'news_password';" || true
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -157,7 +157,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y postgresql-client
-          PGPASSWORD=news_password psql -h localhost -p 5432 -U news_user -c "CREATE ROLE root WITH LOGIN PASSWORD 'news_password';" || true
+          PGPASSWORD=news_password psql -h localhost -p 5432 -U news_user -d news_db -c "CREATE ROLE root WITH LOGIN PASSWORD 'news_password';" || true
       - name: Run database migrations
         working-directory: ./backend
         env:

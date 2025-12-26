@@ -5,9 +5,17 @@ import { TestHelpers } from '../../test/helpers';
 const app = createApp();
 
 describe('User Integration Tests', () => {
+  beforeEach(async () => {
+    await TestHelpers.cleanupDatabase();
+  });
+
+  afterAll(async () => {
+    await TestHelpers.cleanupDatabase();
+  });
+
   describe('PATCH /api/users/me', () => {
     it('should update user profile', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`user-update-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
 
       const response = await request(app)
@@ -34,7 +42,7 @@ describe('User Integration Tests', () => {
 
   describe('GET /api/users/me/preferences', () => {
     it('should get user preferences', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`user-pref-get-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
 
       const response = await request(app)
@@ -48,7 +56,7 @@ describe('User Integration Tests', () => {
 
   describe('PUT /api/users/me/preferences', () => {
     it('should update user preferences', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`user-pref-update-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
 
       const response = await request(app)

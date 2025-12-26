@@ -67,6 +67,11 @@ export class PreferenceRepository {
       return (await this.update(userId, preferences)) || created;
     }
   }
+
+  async deleteAll(): Promise<number> {
+    const result = await query('DELETE FROM user_preferences');
+    return result.rowCount || 0;
+  }
 }
 
 export const preferenceRepository = new PreferenceRepository();

@@ -51,6 +51,11 @@ export class TokenRepository {
     );
     return result.rowCount || 0;
   }
+
+  async deleteAll(): Promise<number> {
+    const result = await query('DELETE FROM refresh_tokens');
+    return result.rowCount || 0;
+  }
 }
 
 export const tokenRepository = new TokenRepository();

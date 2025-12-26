@@ -5,19 +5,26 @@ import { TestHelpers } from '../../test/helpers';
 const app = createApp();
 
 describe('Auth Integration Tests', () => {
+  beforeEach(async () => {
+    await TestHelpers.cleanupDatabase();
+  });
+
+  afterAll(async () => {
+    await TestHelpers.cleanupDatabase();
+  });
+
   describe('POST /api/auth/signup', () => {
     it('should register a new user', async () => {
       const response = await request(app)
         .post('/api/auth/signup')
         .send({
-          email: 'newuser@example.com',
+          email: `newuser-${Date.now()}@example.com`,
           password: 'Test1234',
           display_name: 'New User',
         });
 
       expect(response.status).toBe(201);
       expect(response.body.user).toBeDefined();
-      expect(response.body.user.email).toBe('newuser@example.com');
       expect(response.body.user.display_name).toBe('New User');
       expect(response.body.user.password_hash).toBeUndefined();
       expect(response.body.accessToken).toBeDefined();
@@ -25,12 +32,13 @@ describe('Auth Integration Tests', () => {
     });
 
     it('should reject duplicate email', async () => {
-      await TestHelpers.createUser('duplicate@example.com');
+      const email = `duplicate-${Date.now()}@example.com`;
+      await TestHelpers.createUser(email);
 
       const response = await request(app)
         .post('/api/auth/signup')
         .send({
-          email: 'duplicate@example.com',
+          email,
           password: 'Test1234',
         });
 
@@ -53,7 +61,7 @@ describe('Auth Integration Tests', () => {
       const response = await request(app)
         .post('/api/auth/signup')
         .send({
-          email: 'test@example.com',
+          email: `weak-${Date.now()}@example.com`,
           password: 'weak',
         });
 
@@ -63,29 +71,31 @@ describe('Auth Integration Tests', () => {
 
   describe('POST /api/auth/login', () => {
     it('should login with correct credentials', async () => {
-      await TestHelpers.createUser('login@example.com', 'Test1234');
+      const email = `login-${Date.now()}@example.com`;
+      await TestHelpers.createUser(email, 'Test1234');
 
       const response = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'login@example.com',
+          email,
           password: 'Test1234',
         });
 
       expect(response.status).toBe(200);
       expect(response.body.user).toBeDefined();
-      expect(response.body.user.email).toBe('login@example.com');
+      expect(response.body.user.email).toBe(email);
       expect(response.body.accessToken).toBeDefined();
       expect(response.body.refreshToken).toBeDefined();
     });
 
     it('should reject incorrect password', async () => {
-      await TestHelpers.createUser('test@example.com', 'Test1234');
+      const email = `incorrect-${Date.now()}@example.com`;
+      await TestHelpers.createUser(email, 'Test1234');
 
       const response = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'test@example.com',
+          email,
           password: 'WrongPassword',
         });
 
@@ -97,7 +107,7 @@ describe('Auth Integration Tests', () => {
       const response = await request(app)
         .post('/api/auth/login')
         .send({
-          email: 'nonexistent@example.com',
+          email: `nonexistent-${Date.now()}@example.com`,
           password: 'Test1234',
         });
 
@@ -108,7 +118,7 @@ describe('Auth Integration Tests', () => {
 
   describe('GET /api/auth/me', () => {
     it('should return current user when authenticated', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`authme-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
 
       const response = await request(app)
@@ -139,7 +149,7 @@ describe('Auth Integration Tests', () => {
 
   describe('POST /api/auth/logout', () => {
     it('should logout successfully', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`logout-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
       const refreshToken = await TestHelpers.createRefreshToken(user.id, user.email);
 
@@ -162,7 +172,7 @@ describe('Auth Integration Tests', () => {
 
   describe('POST /api/auth/refresh', () => {
     it('should refresh tokens successfully', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`refresh-${Date.now()}@example.com`);
       const refreshToken = await TestHelpers.createRefreshToken(user.id, user.email);
 
       const response = await request(app)

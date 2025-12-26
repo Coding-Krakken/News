@@ -66,6 +66,11 @@ export class FilterRepository {
     );
     return result.rowCount !== null && result.rowCount > 0;
   }
+
+  async deleteAll(): Promise<number> {
+    const result = await query('DELETE FROM saved_filters');
+    return result.rowCount || 0;
+  }
 }
 
 export const filterRepository = new FilterRepository();

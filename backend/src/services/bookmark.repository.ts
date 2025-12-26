@@ -51,6 +51,11 @@ export class BookmarkRepository {
     );
     return result.rowCount !== null && result.rowCount > 0;
   }
+
+  async deleteAll(): Promise<number> {
+    const result = await query('DELETE FROM bookmarks');
+    return result.rowCount || 0;
+  }
 }
 
 export const bookmarkRepository = new BookmarkRepository();

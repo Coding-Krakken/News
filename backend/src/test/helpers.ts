@@ -8,17 +8,16 @@ import { generateAccessToken, generateRefreshToken, hashToken } from '../utils/j
 import { User } from '../models/user.model';
 
 export class TestHelpers {
-  static async createUser(email = 'test@example.com', password = 'Test1234'): Promise<User> {
-    // If a user with this email already exists (e.g. test DB not fully cleaned), return it
-    const existing = await userRepository.findByEmail(email);
-    if (existing) {
-      const pref = await preferenceRepository.findByUserId(existing.id);
-      if (!pref) {
-        await preferenceRepository.create(existing.id);
-      }
-      return existing;
-    }
+  static async cleanupDatabase(): Promise<void> {
+    // Delete in correct order to respect foreign key constraints
+    await bookmarkRepository.deleteAll();
+    await filterRepository.deleteAll();
+    await tokenRepository.deleteAll();
+    await preferenceRepository.deleteAll();
+    await userRepository.deleteAll();
+  }
 
+  static async createUser(email = 'test@example.com', password = 'Test1234'): Promise<User> {
     const password_hash = await hashPassword(password);
     const user = await userRepository.create({
       email,
@@ -27,17 +26,15 @@ export class TestHelpers {
       display_name: 'Test User',
     });
     // Ensure preferences exist for the created user
-    const pref = await preferenceRepository.findByUserId(user.id);
-    if (!pref) {
-      await preferenceRepository.create(user.id);
-    }
+    await preferenceRepository.create(user.id);
     return user;
   }
 
   static async createMultipleUsers(count: number): Promise<User[]> {
     const users: User[] = [];
+    const timestamp = Date.now();
     for (let i = 0; i < count; i++) {
-      const user = await this.createUser(`test${i}@example.com`, 'Test1234');
+      const user = await this.createUser(`test${i}-${timestamp}@example.com`, 'Test1234');
       users.push(user);
     }
     return users;

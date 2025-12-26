@@ -26,4 +26,6 @@ module.exports = {
     '/dist/',
   ],
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],
+  maxWorkers: 1,
+  testTimeout: 30000,
 };

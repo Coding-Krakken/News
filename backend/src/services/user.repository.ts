@@ -66,6 +66,11 @@ export class UserRepository {
     );
     return result.rowCount !== null && result.rowCount > 0;
   }
+
+  async deleteAll(): Promise<number> {
+    const result = await query('DELETE FROM users');
+    return result.rowCount || 0;
+  }
 }
 
 export const userRepository = new UserRepository();

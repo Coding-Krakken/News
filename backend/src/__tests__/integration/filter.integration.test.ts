@@ -5,9 +5,17 @@ import { TestHelpers } from '../../test/helpers';
 const app = createApp();
 
 describe('Filter Integration Tests', () => {
+  beforeEach(async () => {
+    await TestHelpers.cleanupDatabase();
+  });
+
+  afterAll(async () => {
+    await TestHelpers.cleanupDatabase();
+  });
+
   describe('POST /api/saved-filters', () => {
     it('should create a saved filter', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`filter-create-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
 
       const response = await request(app)
@@ -37,7 +45,7 @@ describe('Filter Integration Tests', () => {
 
   describe('GET /api/saved-filters', () => {
     it('should list user saved filters', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`filter-list-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
       
       await TestHelpers.createFilter(user.id, 'Filter 1');
@@ -55,7 +63,7 @@ describe('Filter Integration Tests', () => {
 
   describe('PUT /api/saved-filters/:id', () => {
     it('should update a saved filter', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`filter-update-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
       const filter = await TestHelpers.createFilter(user.id);
 
@@ -71,6 +79,7 @@ describe('Filter Integration Tests', () => {
     });
 
     it('should not update other user filters', async () => {
+      const timestamp = Date.now();
       const [user1, user2] = await TestHelpers.createMultipleUsers(2);
       const { accessToken } = TestHelpers.generateAuthTokens(user1.id, user1.email);
       const filter = await TestHelpers.createFilter(user2.id);
@@ -88,7 +97,7 @@ describe('Filter Integration Tests', () => {
 
   describe('DELETE /api/saved-filters/:id', () => {
     it('should delete a saved filter', async () => {
-      const user = await TestHelpers.createUser();
+      const user = await TestHelpers.createUser(`filter-delete-${Date.now()}@example.com`);
       const { accessToken } = TestHelpers.generateAuthTokens(user.id, user.email);
       const filter = await TestHelpers.createFilter(user.id);
 
