@@ -33,7 +33,8 @@ function StoriesPage() {
       setIngesting(true);
       await articleService.ingestArticles();
       setIngesting(false);
-      alert('Articles ingested successfully! Now cluster them to create stories.');
+      console.warn('Articles ingested successfully! Now cluster them to create stories.');
+      loadStories(); // Refresh stories after ingestion
     } catch (err) {
       setError(err.message);
       setIngesting(false);
@@ -57,7 +58,7 @@ function StoriesPage() {
 
   const handleFilterChange = (filters) => {
     // In a real app, you would filter stories based on selected filters
-    console.log('Filters changed:', filters);
+    console.warn('Filters changed:', filters);
   };
 
   if (selectedStory) {
@@ -67,22 +68,22 @@ function StoriesPage() {
   return (
     <div>
       <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <button 
-          onClick={handleIngest} 
+        <button
+          onClick={handleIngest}
           className="button button-primary"
           disabled={ingesting}
         >
           {ingesting ? 'Ingesting...' : 'Ingest Articles'}
         </button>
-        <button 
-          onClick={handleCluster} 
+        <button
+          onClick={handleCluster}
           className="button button-primary"
           disabled={clustering}
         >
           {clustering ? 'Clustering...' : 'Cluster Stories'}
         </button>
-        <button 
-          onClick={loadStories} 
+        <button
+          onClick={loadStories}
           className="button button-secondary"
         >
           Refresh
@@ -103,9 +104,9 @@ function StoriesPage() {
       ) : (
         <div className="stories-grid">
           {stories.map(story => (
-            <StoryCard 
-              key={story.story_id} 
-              story={story} 
+            <StoryCard
+              key={story.story_id}
+              story={story}
               onClick={setSelectedStory}
             />
           ))}

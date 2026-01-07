@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { storyService, factCheckerService } from '../services/api';
 
 function StoryDetail({ storyId, onClose }) {
@@ -10,11 +10,7 @@ function StoryDetail({ storyId, onClose }) {
   const [generatingFacts, setGeneratingFacts] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    loadStoryDetails();
-  }, [storyId]);
-
-  const loadStoryDetails = async () => {
+  const loadStoryDetails = useCallback(async () => {
     try {
       setLoading(true);
       const [storyData, articlesData, coverageData] = await Promise.all([
@@ -22,25 +18,29 @@ function StoryDetail({ storyId, onClose }) {
         storyService.getStoryArticles(storyId),
         storyService.getStoryCoverage(storyId)
       ]);
-      
+
       setStory(storyData);
       setArticles(articlesData);
       setCoverage(coverageData);
-      
+
       // Try to load existing fact ledger
       try {
         const ledger = await factCheckerService.getFactLedger(storyId);
         setFactLedger(ledger);
-      } catch (err) {
+      } catch {
         // Fact ledger doesn't exist yet
       }
-      
+
       setLoading(false);
     } catch (err) {
       setError(err.message);
       setLoading(false);
     }
-  };
+  }, [storyId]);
+
+  useEffect(() => {
+    loadStoryDetails();
+  }, [loadStoryDetails]);
 
   const generateFactLedger = async () => {
     try {
@@ -67,16 +67,16 @@ function StoryDetail({ storyId, onClose }) {
       <button onClick={onClose} className="button button-secondary" style={{ marginBottom: '20px' }}>
         ← Back to Stories
       </button>
-      
+
       <div className="story-card" style={{ marginBottom: '20px' }}>
         <h2>{story.title}</h2>
         <p>{story.summary}</p>
-        
+
         <div className="story-meta">
           <span className="badge badge-primary">{story.article_count} articles</span>
           {story.category && <span className="badge badge-secondary">{story.category}</span>}
         </div>
-        
+
         {coverage && (
           <div className="coverage-matrix">
             <h4>Coverage by Source ({coverage.sources_covered.length} sources covered)</h4>
@@ -90,7 +90,7 @@ function StoryDetail({ storyId, onClose }) {
           </div>
         )}
       </div>
-      
+
       <div className="story-card" style={{ marginBottom: '20px' }}>
         <h3>Articles in this Story</h3>
         {articles.map((article, idx) => (
@@ -103,13 +103,13 @@ function StoryDetail({ storyId, onClose }) {
           </div>
         ))}
       </div>
-      
+
       <div className="story-card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <h3>Fact-Only Analysis</h3>
           {!factLedger && (
-            <button 
-              onClick={generateFactLedger} 
+            <button
+              onClick={generateFactLedger}
               className="button button-primary"
               disabled={generatingFacts}
             >
@@ -117,7 +117,7 @@ function StoryDetail({ storyId, onClose }) {
             </button>
           )}
         </div>
-        
+
         {factLedger ? (
           <div className="fact-ledger">
             {factLedger.confirmed_claims.length > 0 && (
@@ -127,14 +127,14 @@ function StoryDetail({ storyId, onClose }) {
                   <div key={idx} className="claim confirmed">
                     <div className="claim-text">{claim.text}</div>
                     <div className="claim-meta">
-                      Originally from: {claim.attribution} | 
+                      Originally from: {claim.attribution} |
                       Corroborated by {claim.corroboration_count} sources: {claim.supporting_sources.join(', ')}
                     </div>
                   </div>
                 ))}
               </div>
             )}
-            
+
             {factLedger.disputed_claims.length > 0 && (
               <div className="claims-section">
                 <h4>✗ Disputed Claims ({factLedger.disputed_claims.length})</h4>
@@ -142,14 +142,14 @@ function StoryDetail({ storyId, onClose }) {
                   <div key={idx} className="claim disputed">
                     <div className="claim-text">{claim.text}</div>
                     <div className="claim-meta">
-                      From: {claim.attribution} | 
+                      From: {claim.attribution} |
                       Disputed by: {claim.disputing_sources.join(', ')}
                     </div>
                   </div>
                 ))}
               </div>
             )}
-            
+
             {factLedger.uncorroborated_claims.length > 0 && (
               <div className="claims-section">
                 <h4>? Uncorroborated Claims ({factLedger.uncorroborated_claims.length})</h4>
@@ -166,7 +166,7 @@ function StoryDetail({ storyId, onClose }) {
           </div>
         ) : (
           <p style={{ color: '#666' }}>
-            Click "Generate Fact Ledger" to analyze all sources, extract claims, 
+            Click "Generate Fact Ledger" to analyze all sources, extract claims,
             cross-corroborate them, and separate confirmed from disputed facts.
           </p>
         )}

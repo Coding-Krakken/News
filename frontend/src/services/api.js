@@ -7,7 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 // Log configuration in development
 if (import.meta.env.DEV) {
-  console.log('API Configuration:', {
+  console.warn('API Configuration:', {
     baseURL: API_BASE_URL,
     environment: import.meta.env.VITE_ENVIRONMENT || 'local'
   });

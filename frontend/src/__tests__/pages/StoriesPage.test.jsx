@@ -31,7 +31,7 @@ vi.mock('../../components/StoryDetail', () => ({
 }))
 
 vi.mock('../../components/Filters', () => ({
-  default: ({ onFilterChange }) => (
+  default: () => (
     <div data-testid="filters">Filters</div>
   )
 }))
@@ -63,7 +63,7 @@ describe('StoriesPage', () => {
 
   it('should render page controls', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Ingest Articles')).toBeInTheDocument()
       expect(screen.getByText('Cluster Stories')).toBeInTheDocument()
@@ -73,7 +73,7 @@ describe('StoriesPage', () => {
 
   it('should render filters', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByTestId('filters')).toBeInTheDocument()
     })
@@ -81,7 +81,7 @@ describe('StoriesPage', () => {
 
   it('should load and display stories', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Test Story 1')).toBeInTheDocument()
       expect(screen.getByText('Test Story 2')).toBeInTheDocument()
@@ -90,27 +90,27 @@ describe('StoriesPage', () => {
 
   it('should handle ingest articles click', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Ingest Articles')).toBeInTheDocument()
     })
 
-    // Mock window.alert
-    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
-    
+    // Mock console.warn
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
     fireEvent.click(screen.getByText('Ingest Articles'))
 
     await waitFor(() => {
       expect(articleService.ingestArticles).toHaveBeenCalled()
-      expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('Articles ingested successfully'))
+      expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining('Articles ingested successfully'))
     })
 
-    alertSpy.mockRestore()
+    warnSpy.mockRestore()
   })
 
   it('should handle cluster stories click', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Cluster Stories')).toBeInTheDocument()
     })
@@ -124,7 +124,7 @@ describe('StoriesPage', () => {
 
   it('should handle refresh click', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Refresh')).toBeInTheDocument()
     })
@@ -139,9 +139,9 @@ describe('StoriesPage', () => {
 
   it('should show empty state when no stories', async () => {
     storyService.getStories.mockResolvedValue([])
-    
+
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('No stories yet')).toBeInTheDocument()
       expect(screen.getByText(/Ingest articles and cluster them/)).toBeInTheDocument()
@@ -150,7 +150,7 @@ describe('StoriesPage', () => {
 
   it('should open story detail on card click', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Test Story 1')).toBeInTheDocument()
     })
@@ -165,7 +165,7 @@ describe('StoriesPage', () => {
 
   it('should close story detail', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Test Story 1')).toBeInTheDocument()
     })
@@ -191,9 +191,9 @@ describe('StoriesPage', () => {
 
   it('should handle error state', async () => {
     storyService.getStories.mockRejectedValue(new Error('Failed to load'))
-    
+
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText(/Error/)).toBeInTheDocument()
     })
@@ -201,7 +201,7 @@ describe('StoriesPage', () => {
 
   it('should disable buttons during operations', async () => {
     render(<StoriesPage />)
-    
+
     await waitFor(() => {
       expect(screen.getByText('Ingest Articles')).toBeInTheDocument()
     })
