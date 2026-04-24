@@ -56,7 +56,7 @@ describe('StoriesPage additional behavior', () => {
   })
 
   it('calls onFilterChange and logs the filters', async () => {
-    const spy = vi.spyOn(console, 'log')
+    const spy = vi.spyOn(console, 'warn')
 
     render(<StoriesPage />)
 
