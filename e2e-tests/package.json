@@ -1,0 +1,33 @@
+{
+  "name": "news-analytics-e2e-tests",
+  "version": "1.0.0",
+  "description": "End-to-end tests for News Analytics Platform production deployment",
+  "type": "module",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
+    "test:debug": "playwright test --debug",
+    "show-report": "playwright show-report",
+    "install-browsers": "playwright install"
+  },
+  "keywords": [
+    "playwright",
+    "e2e",
+    "testing",
+    "news-analytics"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "main": "playwright.config.js",
+  "directories": {
+    "test": "tests"
+  }
+}
